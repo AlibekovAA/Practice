@@ -6,7 +6,6 @@ from Pages.base_page import BasePage
 from generator import generated_pass_number
 
 
-
 class LoginPage(BasePage):
     locators = LoginPageLocators()
 
@@ -19,8 +18,10 @@ class LoginPage(BasePage):
         return
 
     def check_login(self):
-        txt = self.elements_are_visible(self.locators.BUTTON_EXIT).text
-        return txt
+        #txt = self.elements_are_visible(self.locators.BUTTON_EXIT).text
+        txt = self.elements_are_present(self.locators.BUTTON_EXIT).text
+        print(txt[2])
+        return txt[2]
 
 
 class StartPage(BasePage):
@@ -36,7 +37,25 @@ class StartPage(BasePage):
         self.element_is_visible(self.locators.LAST_NAME).send_keys(last_name)
         self.element_is_visible(self.locators.FIRST_NAME).send_keys(first_name)
         self.element_is_visible(self.locators.SAVE_PERSON).click()
+        page_source = self.driver.page_source
+        if "Autotest T." in page_source:
+            print("\nПользователь добавлен")
+        else:
+            print("\nНе удалось добавить пользователя")
         return last_name, first_name
+
+    def del_visitors(self):
+        last_name = 'Autotest'
+        first_name = 'Test'
+        fi_name = last_name + ' ' + first_name[0]
+        self.element_is_visible(self.locators.MENU).click()
+        self.element_is_visible(self.locators.VISITORS).click()
+        self.element_is_visible(self.locators.FIND_VISITORS).send_keys(fi_name)
+        checkbox_button = self.elements_are_present(self.locators.FIND_CHECKBOX, timeout=10)
+        checkbox_button[1].click()
+        self.element_is_clickable(self.locators.BUTTON_DEL, timeout=10).click()
+        self.element_is_clickable(self.locators.BUTTON_OK).click()
+        return fi_name
 
     def add_access_group(self):
         name_access_group = 'Авто'
@@ -54,29 +73,39 @@ class StartPage(BasePage):
         self.element_is_visible(self.locators.MENU).click()
         self.element_is_visible(self.locators.MY_APPLICATION).click()
         self.element_is_visible(self.locators.BUTTON_ADD_VISITORS).click()
+
         element = self.element_is_visible(self.locators.BUTTON_DAWN_DROP).text
         self.element_is_visible(self.locators.BUTTON_DAWN_DROP).click()  # .send_keys(last_name)
-        #print(f' Элемент - {element}') # пустое значение
-        self.element_is_visible(self.locators.INPUT_VISITORS).click()  # иногда падает тут - понять в чем плавающая ошибка, возможно дело в локаторе
-        #time.sleep(6)
+        # print(f' Элемент - {element}') # пустое значение
+        self.element_is_visible(
+            self.locators.INPUT_VISITORS).click()  # иногда падает тут - понять в чем плавающая ошибка, возможно дело в локаторе
+        # time.sleep(6)
         self.element_is_visible(self.locators.ACCESS_GROUP_IN_MY_APP).send_keys(name_access_group)
-        #time.sleep(3)
+        # time.sleep(3)
         self.element_is_visible(self.locators.INPUT_ACCESS_GROUP_IN_MY_APP).click()
         self.element_is_visible(self.locators.BUTTON_IN_PROCESSING).click()
-        #time.sleep(3)
+        # time.sleep(3)
         self.element_is_visible(self.locators.CLOSE_WINDOW_MY_APP).click()
 
+    def del_my_application(self):
+        last_name = 'Autotest'
+        self.element_is_visible(self.locators.MENU).click()
+        self.element_is_visible(self.locators.MY_APPLICATION).click()
+        self.element_is_visible(self.locators.FIND_APPLICATION).send_keys(last_name)
+        checkbox_button = self.elements_are_present(self.locators.CHECKBOX_APPLICATION, timeout=10)
+        checkbox_button[1].click()
+        self.element_is_clickable(self.locators.DEL_APPLICATION).click()
+        self.element_is_clickable(self.locators.APPLICATION_OK).click()
+
     def open_incoming(self):
-        #self.element_is_visible(self.locators.MENU).click()  # закомментить при необходимости
+        # self.element_is_visible(self.locators.MENU).click()  # закомментить при необходимости
         self.element_is_visible(self.locators.INCOMING).click()
         self.element_is_visible(self.locators.FIRST_STRING_IN_TABLE).click()
-
 
     def agreement_application(self):
         self.element_is_visible(self.locators.AGREEMENT_BUTTON).click()
         number_pass = generated_pass_number()  # сделать рандомную генерацию
-        #print(number_pass)
-
+        # print(number_pass)
 
     def issue_pass(self):
         txt_1 = self.element_is_visible(self.locators.STATUS_AGREEMENT).text
@@ -99,12 +128,12 @@ class StartPage(BasePage):
         # # выдача пропуска
         # # сделать рандомный выбор HEX / DEC
         time.sleep(5)
-        #self.element_is_visible(self.locators.INPUT_NUMBER_PASS).send_keys(number_pass) # не отрабатывает
+        # self.element_is_visible(self.locators.INPUT_NUMBER_PASS).send_keys(number_pass) # не отрабатывает
         self.element_is_visible(self.locators.BUTTON_OK_NUMBER_PASS).click()
         txt_3 = self.element_is_visible(self.locators.STATUS_AGREEMENT).text
         print(txt_3)
         self.element_is_visible(self.locators.CLOSE_WINDOW_MY_APP).click()
-        #self.element_is_visible(self.locators.CLOSE_WINDOW_MY_APP).click()
+        # self.element_is_visible(self.locators.CLOSE_WINDOW_MY_APP).click()
         # статусы Согласуется - разрешено - обработано
 
     def reject_application(self):
@@ -114,8 +143,8 @@ class StartPage(BasePage):
         self.element_is_visible(self.locators.ANNUL_BUTTON).click()
 
     def withdraw_pass(self):
-        #url = 'http://localhost/listedData/passDictionaryActive'
-        #open(url)
+        # url = 'http://localhost/listedData/passDictionaryActive'
+        # open(url)
         self.element_is_visible(self.locators.BUTTON_ACTIVE_PASS).click()
 
         self.element_is_visible(self.locators.CHOOSE_FIRST_LINE).click()
@@ -125,9 +154,8 @@ class StartPage(BasePage):
         self.element_is_visible(self.locators.BUTTON_OK_PATTERN_APPROVE).click()
         self.element_is_visible(self.locators.CLOSE_WINDOW_ACTIVATE_PASS).click()
 
-
     def copy_application(self):
-        #открыть заявку которую копировать
+        # открыть заявку которую копировать
         self.element_is_visible(self.locators.MENU).click()
         self.element_is_visible(self.locators.MY_APPLICATION).click()
         self.element_is_visible(self.locators.CHOOSE_FIRST_LINE).click()
@@ -136,8 +164,8 @@ class StartPage(BasePage):
         self.element_is_visible(self.locators.BUTTON_IN_PROCESSING).click()
         self.element_is_visible(self.locators.CLOSE_WINDOW_MY_APP).click()
 
-
         # перенести в другое
+
     def add_another_pass(self):
         self.element_is_visible(self.locators.AGREEMENT_BUTTON).click()
         self.element_is_visible(self.locators.THREE_POINT_AGREEMENT).click()
@@ -153,5 +181,3 @@ class StartPage(BasePage):
 
     def open_menu(self):
         self.element_is_visible(self.locators.MENU).click()
-
-

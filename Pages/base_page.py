@@ -2,6 +2,7 @@ from selenium.webdriver import ActionChains
 from selenium.webdriver.support.ui import WebDriverWait as wait
 from selenium.webdriver.support import expected_conditions as EC
 
+
 class BasePage:
     def __init__(self, driver, url):
         self.driver = driver
@@ -11,7 +12,6 @@ class BasePage:
         self.driver.get(self.url)
 
     def element_is_visible(self, locator, timeout=5):
-
         return wait(self.driver, timeout).until(EC.visibility_of_element_located(locator))
 
     def elements_are_visible(self, locator, timeout=5):
@@ -46,10 +46,9 @@ class BasePage:
         text = txt.split('[', 1)[1].split(']')[0]
         return text
 
-    #def switch_to_new_tab(self):
+    # def switch_to_new_tab(self):
 
     #
     # def remove_footer(self):
     #     self.driver.execute_script("document.getElementsByTagName('footer')[0].remove();")
     #     self.driver.execute_script("document.getElementsById('close-fixedban').remove();")
-

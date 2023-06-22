@@ -11,9 +11,8 @@ def test_login_form(driver):
     time.sleep(0.1)
     login_page.filing_login_pass()
     time.sleep(0.1)
-    # #now_url = driver.getCurrenUrl()
+    # now_url = driver.getCurrenUrl
     # answer = login_page.check_login()
-    # print(answer)
     # assert answer in 'Выход'
     return driver.current_url
     # TODO  - сделать проверку что авторизация прошла успешна - можно по урл
@@ -22,15 +21,21 @@ def test_login_form(driver):
 """Создание посетителя"""
 
 
-def test_add_viitor(driver):
+def test_add_visitor(driver):
     url = test_login_form(driver)
     start_page = StartPage(driver, url)
     start_page.add_visitors()
     return driver.current_url
-    # time.sleep(3)
 
-    # TODO - сделать удаление посетителя
-    # TODO - сделать проверку что создан посетитель
+
+"""Удаление посетителя"""
+
+
+def test_del_visitor(driver):
+    url = test_login_form(driver)
+    start_page = StartPage(driver, url)
+    start_page.del_visitors()
+    return driver.current_url
 
 
 """Создание Группы Доступа"""
@@ -59,8 +64,16 @@ def test_create_my_application(driver):
     # time.sleep(2)
 
 
+"""Удаление заявки"""
+
+
+def test_del_my_application(driver):
+    url = test_login_form(driver)
+    start_page = StartPage(driver, url)
+    start_page.del_my_application()
+
     # TODO - сделать проверку что создалась заявка и то что она в обработке
-    # TODO - сделать удаление заявки
+    # TODO - допилить тест для создание заявки
 
 """делает изъятие выдачи"""
 def test_withdraw_pass(driver):
