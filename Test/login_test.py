@@ -8,15 +8,12 @@ from Pages.login_page import LoginPage, StartPage
 def test_login_form(driver):
     login_page = LoginPage(driver, 'http://localhost/auth/login')
     login_page.open()
-    time.sleep(0.1)
+    time.sleep(0.1) #TODO - а тут надо ли убрать sleep()?
     login_page.filing_login_pass()
     time.sleep(0.1)
-    # now_url = driver.getCurrenUrl
-    # answer = login_page.check_login()
-    # assert answer in 'Выход'
+    answer = login_page.check_login()
+    assert answer == 'http://localhost/listedData/userRequestsAll', "Произошла ошибка авторизации"
     return driver.current_url
-    # TODO  - сделать проверку что авторизация прошла успешна - можно по урл
-
 
 """Создание посетителя"""
 
@@ -56,11 +53,14 @@ def test_create_my_application(driver):
     start_page.add_my_application()
 
     start_page.open_incoming()
-    """Перевод заявки в согласие и выдача заявки"""
+    # """Перевод заявки в согласие и выдача заявки"""
     start_page.agreement_application()
     txt_1 = start_page.issue_pass()
-    start_page.signing_receiving_pass(txt_1)
-
+    test_1 = start_page.signing_receiving_pass(txt_1)
+    assert test_1 == 'Разрешено', "\nПроизошла ошибка"
+    start_page.open_incoming() # Тут тупанул и открываю снова "Входящие", а надо "Оформленные". TODO - завтра исправлю
+    test_2 = start_page.check_pass()
+    assert test_2 == 'Одобрено', "\nПроизошла ошибка"
     # time.sleep(2)
 
 
@@ -71,9 +71,6 @@ def test_del_my_application(driver):
     url = test_login_form(driver)
     start_page = StartPage(driver, url)
     start_page.del_my_application()
-
-    # TODO - сделать проверку что создалась заявка и то что она в обработке
-    # TODO - допилить тест для создание заявки
 
 """делает изъятие выдачи"""
 def test_withdraw_pass(driver):

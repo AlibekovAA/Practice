@@ -6,7 +6,7 @@ class LoginPageLocators:
     PASS = (By.CSS_SELECTOR, "input[id='passwordControl']")
     BUTTON_LOGIN = (By.CSS_SELECTOR,
                     'button[class="mat-mdc-tooltip-trigger login__form__btn mdc-button mdc-button--raised mat-mdc-raised-button mat-primary mat-mdc-button-base"]')
-    BUTTON_EXIT = (By.CSS_SELECTOR, 'span[class="mdc-button__label"]')
+    BUTTON_EXIT = (By.CSS_SELECTOR, "#body > app-root > div > app-toolbar > div > mat-toolbar > mat-toolbar-row > div > div:nth-child(5) > app-profile-brief > button > span.mdc-button__label")
     MENU = (By.CSS_SELECTOR, "span[class='mat-mdc-button-touch-target']")
 
 class StartPageLocators:
@@ -31,6 +31,24 @@ class StartPageLocators:
     DEL_APPLICATION = (By.CSS_SELECTOR,
                        "#body > app-root > div > app-content > mat-sidenav-container > mat-sidenav-content > div > app-listed-data > app-paged-object-list2 > mat-drawer-container > mat-drawer-content > div > div:nth-child(2) > div > button:nth-child(2) > span.mat-mdc-button-touch-target")
     APPLICATION_OK = (By.XPATH, "//span[contains(text(), 'ОК')]")
+    #TODO - END
+
+    #TODO - добавление заявки
+    INPUT_VISITOR = (By.XPATH, "//input[@placeholder='Посетители']")
+    VISITORS_BUTTON = (By.CSS_SELECTOR, "span[class='mdc-list-item__primary-text']")
+    BUTTON_IN_PROCESSING = (By.XPATH, "//span[contains(text(), 'В обработку')]")
+    FIRST_STRING_IN_TABLE = (By.XPATH, '//tbody[@class="mdc-data-table__content"]/tr[@class="mat-mdc-row mdc-data-table__row cdk-row ng-star-inserted"]')
+    AGREEMENT_BUTTON = (By.XPATH, "//span[contains(text(), 'Выдать')]")
+    BUTTON_ISSUE_PASS = (By.XPATH, "//span[contains(text(), 'ОК')]")
+    CLOSE_WINDOW_MY_APP = (By.XPATH,
+                           '/html/body/div[4]/div[2]/div/mat-dialog-container/div/div/app-show-obj-component/section/app-common-object-editor/div/app-request/lib-base-panel/section/div[2]/div[1]/div[2]/button[2]/span[4]')
+    CHECK_BOX_APPROVE = (By.XPATH, "//label[contains(text(), 'Согласие на обработку персональных данных подписано ')]")
+    SAVE_APPROVE = (By.XPATH, "//span[contains(text(), 'Сохранить')]")
+    INPUT_NUMBER_PASS = (By.XPATH, "//input[@placeholder='Номер пропуска']")
+    BUTTON_OK_NUMBER_PASS = (By.XPATH, "//span[contains(text(), 'ОК')]")
+    STATUS_AGREEMENT = (By.CSS_SELECTOR,
+                        ' div > app-show-obj-component > section > app-common-object-editor > div > app-request > lib-base-panel > section > div.cdk-drag.cdk-drag-handle.left-side > h3')
+    INPUT_ACCESS_GROUP_IN_MY_APP = (By.XPATH, '/html/body/div[4]/div[3]/div/div/mat-option/span')
     #TODO - END
 
     LAST_NAME = (By.XPATH,
@@ -58,20 +76,13 @@ class StartPageLocators:
     ACCESS_GROUP_IN_MY_APP = (By.XPATH,
                               '/html/body/div[4]/div[2]/div/mat-dialog-container/div/div/app-show-obj-component/section/app-common-object-editor/div/app-request/lib-base-panel/section/div[2]/div[2]/div/div[1]/div[2]/app-access-group-list-control/mat-form-field/div[1]/div[2]/div[1]/mat-chip-grid/div/input')
 
-    BUTTON_IN_PROCESSING = (By.XPATH,
-                            '/html/body/div[4]/div[2]/div/mat-dialog-container/div/div/app-show-obj-component/section/app-common-object-editor/div/app-request/lib-base-panel/section/div[2]/div[3]/mat-dialog-actions/app-btn-plain[1]/button')
     INPUT_VISITORS = (By.XPATH, '/html/body/div[4]/div[3]/div/div/div/div/mat-option[5]/span/div')
     BUTTON_DAWN_DROP = (By.XPATH,
                         '/html/body/div[4]/div[2]/div/mat-dialog-container/div/div/app-show-obj-component/section/app-common-object-editor/div/app-request/lib-base-panel/section/div[2]/div[2]/div/div[1]/app-person-list-control/mat-form-field/div[1]/div[2]/div[2]/button[1]/span[4]')
-    INPUT_ACCESS_GROUP_IN_MY_APP = (By.XPATH, '/html/body/div[4]/div[3]/div/div/mat-option/span')
-    CLOSE_WINDOW_MY_APP = (By.XPATH,
-                           '/html/body/div[4]/div[2]/div/mat-dialog-container/div/div/app-show-obj-component/section/app-common-object-editor/div/app-request/lib-base-panel/section/div[2]/div[1]/div[2]/button[2]/span[4]')
 
     INCOMING = (By.XPATH,
                 '/html/body/app-root/div/app-content/mat-sidenav-container/mat-sidenav/div/div/div[1]/div[2]/table/tr[2]/td/mat-nav-list/a[1]')
 
-    FIRST_STRING_IN_TABLE = (By.XPATH,
-                             '/html/body/app-root/div/app-content/mat-sidenav-container/mat-sidenav-content/div/app-listed-data/app-paged-object-list2/mat-drawer-container/mat-drawer-content/div/div[4]/table/tbody/tr[1]')
 
     THREE_POINT_INCOMING = (By.CSS_SELECTOR,
                             ' div > div > app-show-obj-component > section > app-common-object-editor > div > app-request > lib-base-panel > section > div.content.ng-star-inserted > div.content-wrapper > div.wrapper.ng-star-inserted > div:nth-child(1) > app-cardholders-table > div > table > tbody > tr > td.mat-mdc-cell.mdc-data-table__cell.cdk-cell.actions.cdk-column-actions.mat-column-actions.ng-star-inserted > button > span.mat-mdc-button-touch-target')
@@ -80,31 +91,17 @@ class StartPageLocators:
 
     REJECT_BUTTON = (By.XPATH,
                      '/html/body/div[6]/div[2]/div/mat-dialog-container/div/div/app-show-obj-component/section/app-common-object-editor/div/app-request/lib-base-panel/section/div[2]/div[3]/mat-dialog-actions/app-btn-plain[2]/button')
-    AGREEMENT_BUTTON = (By.CSS_SELECTOR,
-                        'div > div > app-show-obj-component > section > app-common-object-editor > div > app-request > lib-base-panel > section > div.content.ng-star-inserted > div.custom-actions > mat-dialog-actions > app-btn-plain:nth-child(1) > button')
+
     ANNUL_BUTTON = (By.XPATH,
                     '/html/body/div[6]/div[2]/div/mat-dialog-container/div/div/app-show-obj-component/section/app-common-object-editor/div/app-request/lib-base-panel/section/div[2]/div[3]/mat-dialog-actions/button[1]')
 
-    STATUS_AGREEMENT = (By.CSS_SELECTOR,
-                        ' div > app-show-obj-component > section > app-common-object-editor > div > app-request > lib-base-panel > section > div.cdk-drag.cdk-drag-handle.left-side > h3')
     THREE_POINT_AGREEMENT = (By.CSS_SELECTOR,
                              'div > div > app-show-obj-component > section > app-common-object-editor > div > app-request > lib-base-panel > section > div.content.ng-star-inserted > div.content-wrapper > div.wrapper.ng-star-inserted > div:nth-child(1) > app-cardholders-table > div > table > tbody > tr > td.mat-mdc-cell.mdc-data-table__cell.cdk-cell.actions.cdk-column-actions.mat-column-actions.ng-star-inserted > button')
-    BUTTON_ISSUE_PASS = (By.CSS_SELECTOR,
-                         '#body > div.cdk-overlay-container > div.cdk-overlay-connected-position-bounding-box > div > div > div > div > button')
 
     APPROVE_PATTERN = (By.XPATH,
                        '/html/body/div[6]/div[4]/div/mat-dialog-container/div/div/app-show-msg-component/section/app-dialog-header/div/div/div[1]/h2')
     BUTTON_OK_PATTERN_APPROVE = (By.CSS_SELECTOR,
                                  ' div > div > app-show-msg-component > section > mat-dialog-actions > app-btn-dialog:nth-child(1) > button > span.mdc-button__label')
-
-    CHECK_BOX_APPROVE = (By.CSS_SELECTOR, 'div.mdc-checkbox >  input.mdc-checkbox__native-control')
-    SAVE_APPROVE = (By.XPATH,
-                    '/html/body/div[6]/div[4]/div/mat-dialog-container/div/div/app-consent-dialog/mat-dialog-actions/button[1]')
-
-    INPUT_NUMBER_PASS = (By.CSS_SELECTOR,
-                         'div > div > app-issue-pass-component > div > mat-dialog-content > div > app-pass-number > app-pass-number-control > mat-form-field > div.mat-mdc-text-field-wrapper.mdc-text-field--filled.mdc-text-field--invalid > div.mat-mdc-form-field-flex > div.mat-mdc-form-field-infix > input')  # v
-    BUTTON_OK_NUMBER_PASS = (
-    By.CSS_SELECTOR, 'div > div > app-issue-pass-component > div > mat-dialog-actions > button')
 
     COPY_APPLICATION_BUTTON = (By.CSS_SELECTOR,
                                'div > div > app-show-obj-component > section > app-common-object-editor > div > app-request > lib-base-panel > section > div.content.ng-star-inserted > div.content-wrapper > div.toolbar.ng-star-inserted > app-action-toolbar > div > button:nth-child(5)')

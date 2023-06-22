@@ -1,9 +1,10 @@
 import time
 
 from locators.locators import LoginPageLocators, StartPageLocators
-
+import random
 from Pages.base_page import BasePage
 from generator import generated_pass_number
+from test import parser_status
 
 
 class LoginPage(BasePage):
@@ -18,10 +19,8 @@ class LoginPage(BasePage):
         return
 
     def check_login(self):
-        #txt = self.elements_are_visible(self.locators.BUTTON_EXIT).text
-        txt = self.elements_are_present(self.locators.BUTTON_EXIT).text
-        print(txt[2])
-        return txt[2]
+        button_exit = self.element_is_clickable(self.locators.BUTTON_EXIT)
+        return self.driver.current_url
 
 
 class StartPage(BasePage):
@@ -70,29 +69,35 @@ class StartPage(BasePage):
         last_name = 'Autotest '
         name_access_group = 'Авто'
         first_name = 'Test'
+        fi_name = last_name + first_name
         self.element_is_visible(self.locators.MENU).click()
-        self.element_is_visible(self.locators.MY_APPLICATION).click()
+        self.element_is_clickable(self.locators.MY_APPLICATION).click()
         self.element_is_visible(self.locators.BUTTON_ADD_VISITORS).click()
-
-        element = self.element_is_visible(self.locators.BUTTON_DAWN_DROP).text
-        self.element_is_visible(self.locators.BUTTON_DAWN_DROP).click()  # .send_keys(last_name)
-        # print(f' Элемент - {element}') # пустое значение
-        self.element_is_visible(
-            self.locators.INPUT_VISITORS).click()  # иногда падает тут - понять в чем плавающая ошибка, возможно дело в локаторе
-        # time.sleep(6)
+        self.element_is_visible(self.locators.INPUT_VISITOR).send_keys(fi_name)
+        self.element_is_clickable(self.locators.VISITORS_BUTTON).click()
         self.element_is_visible(self.locators.ACCESS_GROUP_IN_MY_APP).send_keys(name_access_group)
-        # time.sleep(3)
         self.element_is_visible(self.locators.INPUT_ACCESS_GROUP_IN_MY_APP).click()
         self.element_is_visible(self.locators.BUTTON_IN_PROCESSING).click()
-        # time.sleep(3)
         self.element_is_visible(self.locators.CLOSE_WINDOW_MY_APP).click()
+        # element = self.element_is_visible(self.locators.BUTTON_DAWN_DROP).text
+        # self.element_is_visible(self.locators.BUTTON_DAWN_DROP).click()  # .send_keys(last_name)
+        # # print(f' Элемент - {element}') # пустое значение
+        # self.element_is_visible(
+        #     self.locators.INPUT_VISITORS).click()  # иногда падает тут - понять в чем плавающая ошибка, возможно дело в локаторе
+        # # time.sleep(6)
+        # self.element_is_visible(self.locators.ACCESS_GROUP_IN_MY_APP).send_keys(name_access_group)
+        # # time.sleep(3)
+        # self.element_is_visible(self.locators.INPUT_ACCESS_GROUP_IN_MY_APP).click()
+        # self.element_is_visible(self.locators.BUTTON_IN_PROCESSING).click()
+        # # time.sleep(3)
+        #self.element_is_visible(self.locators.CLOSE_WINDOW_MY_APP).click()
 
     def del_my_application(self):
         last_name = 'Autotest'
         self.element_is_visible(self.locators.MENU).click()
         self.element_is_visible(self.locators.MY_APPLICATION).click()
         self.element_is_visible(self.locators.FIND_APPLICATION).send_keys(last_name)
-        checkbox_button = self.elements_are_present(self.locators.CHECKBOX_APPLICATION, timeout=10)
+        checkbox_button = self.elements_are_present(self.locators.CHECKBOX_APPLICATION)
         checkbox_button[1].click()
         self.element_is_clickable(self.locators.DEL_APPLICATION).click()
         self.element_is_clickable(self.locators.APPLICATION_OK).click()
@@ -100,18 +105,20 @@ class StartPage(BasePage):
     def open_incoming(self):
         # self.element_is_visible(self.locators.MENU).click()  # закомментить при необходимости
         self.element_is_visible(self.locators.INCOMING).click()
-        self.element_is_visible(self.locators.FIRST_STRING_IN_TABLE).click()
-
+        string_table = self.elements_are_visible(self.locators.FIRST_STRING_IN_TABLE)
+        string_table[0].click()
     def agreement_application(self):
         self.element_is_visible(self.locators.AGREEMENT_BUTTON).click()
-        number_pass = generated_pass_number()  # сделать рандомную генерацию
+        # number_pass = generated_pass_number()  # сделать рандомную генерацию
         # print(number_pass)
 
     def issue_pass(self):
         txt_1 = self.element_is_visible(self.locators.STATUS_AGREEMENT).text
         # print(txt_1) # написать функцию которая парсит текст и находит слово в []
-        self.element_is_visible(self.locators.THREE_POINT_AGREEMENT).click()
-        self.element_is_visible(self.locators.BUTTON_ISSUE_PASS).click()
+        #self.element_is_visible(self.locators.THREE_POINT_AGREEMENT).click()
+        page_source = self.driver.page_source
+        if "Шаблон согласия" in page_source:
+            self.element_is_clickable(self.locators.BUTTON_ISSUE_PASS).click()
         return txt_1
         # ТЕПЕРЬ МЫ ТУТ УРАААА
         #  сделать проверку если есть окно - то делаем согласие - если нет то идем сразу на выдачу
@@ -122,19 +129,19 @@ class StartPage(BasePage):
         #     self.element_is_visible(self.locators.BUTTON_OK_PATTERN_APPROVE).click()
         #     # ТЕПЕРЬ МЫ ТУТ УРАААА
         #     time.sleep(5)
-        #     self.element_is_visible(self.locators.CHECK_BOX_APPROVE).click()  # не находит этот локатор (чек бокс)
-        #     self.element_is_clickable(self.locators.CHECK_BOX_APPROVE).click()
-        #     self.element_is_visible(self.locators.SAVE_APPROVE).click()
+        self.element_is_clickable(self.locators.CHECK_BOX_APPROVE).click()
+        self.element_is_visible(self.locators.SAVE_APPROVE).click()
         # # выдача пропуска
         # # сделать рандомный выбор HEX / DEC
-        time.sleep(5)
-        # self.element_is_visible(self.locators.INPUT_NUMBER_PASS).send_keys(number_pass) # не отрабатывает
+        #time.sleep(5)
+        number_pass = random.randint(0, 10000)
+        self.element_is_visible(self.locators.INPUT_NUMBER_PASS).send_keys(number_pass)
         self.element_is_visible(self.locators.BUTTON_OK_NUMBER_PASS).click()
         txt_3 = self.element_is_visible(self.locators.STATUS_AGREEMENT).text
-        print(txt_3)
+        txt_2 = parser_status(txt_3) #по идее парсер уже можно перенести сюда из test.py. Пока импортировал
         self.element_is_visible(self.locators.CLOSE_WINDOW_MY_APP).click()
-        # self.element_is_visible(self.locators.CLOSE_WINDOW_MY_APP).click()
         # статусы Согласуется - разрешено - обработано
+        return txt_2
 
     def reject_application(self):
         self.element_is_visible(self.locators.REJECT_BUTTON).click()
@@ -173,7 +180,9 @@ class StartPage(BasePage):
         self.element_is_visible(self.locators.BUTTON_YES_PO).click()
 
     def check_pass(self):
-        pass
+        txt_3 = self.element_is_visible(self.locators.STATUS_AGREEMENT).text
+        txt_1 = parser_status(txt_3)
+        return txt_1
 
     # def parser_status(txt):
     #     text = txt.split('[', 1)[1].split(']')[0]
