@@ -9,7 +9,16 @@ class LoginPageLocators:
     BUTTON_EXIT = (By.CSS_SELECTOR, "#body > app-root > div > app-toolbar > div > mat-toolbar > mat-toolbar-row > div > div:nth-child(5) > app-profile-brief > button > span.mdc-button__label")
     MENU = (By.CSS_SELECTOR, "span[class='mat-mdc-button-touch-target']")
 
+
 class StartPageLocators:
+    #TODO - Login
+
+    LOGIN = (By.CSS_SELECTOR, "input[id='loginControl']")
+    PASS = (By.CSS_SELECTOR, "input[id='passwordControl']")
+    BUTTON_LOGIN = (By.CSS_SELECTOR,
+                    'button[class="mat-mdc-tooltip-trigger login__form__btn mdc-button mdc-button--raised mat-mdc-raised-button mat-primary mat-mdc-button-base"]')
+    #TODO - END
+
     MENU = (By.CSS_SELECTOR, "span[class='mat-mdc-button-touch-target']")
     FIND = (By.CSS_SELECTOR, 'input[id="mat-input-1"]')
     BUTTON_OPEN_ALL = "/html/body/app-root/div/app-content/mat-sidenav-container/mat-sidenav/div/div/div[1]/div[1]/div/button/span[1]"
@@ -33,6 +42,9 @@ class StartPageLocators:
     APPLICATION_OK = (By.XPATH, "//span[contains(text(), 'ОК')]")
     #TODO - END
 
+    #TODO - Статус одобрено
+    MY_APPLICATION_STATUS = (By.CSS_SELECTOR, "#body > app-root > div > app-content > mat-sidenav-container > mat-sidenav > div > div > div:nth-child(1) > div.divLtr.ng-star-inserted > table > tr:nth-child(2) > td > mat-nav-list > a:nth-child(2) > span > span > div")
+
     #TODO - добавление заявки
     INPUT_VISITOR = (By.XPATH, "//input[@placeholder='Посетители']")
     VISITORS_BUTTON = (By.CSS_SELECTOR, "span[class='mdc-list-item__primary-text']")
@@ -51,6 +63,25 @@ class StartPageLocators:
     INPUT_ACCESS_GROUP_IN_MY_APP = (By.XPATH, '/html/body/div[4]/div[3]/div/div/mat-option/span')
     #TODO - END
 
+    #TODO - Кейс
+
+    ADD_INFORM = (By.XPATH, '//div[@class="wrapper" and contains(text(), "Доп. информация")]')
+    DEL_CATEGORY = (By.XPATH, '//*[@class="mat-icon notranslate mat-mdc-tooltip-trigger mat-primary ng-star-inserted"]')
+    BUTTON_SEARCH = (By.XPATH, "//input[@placeholder='Категория']")
+    CATEGORY_BUTTON = (By.CSS_SELECTOR, "span[class='mdc-list-item__primary-text']")
+    OPERATORS = (By.XPATH, '//*[@id="body"]/app-root/div/app-content/mat-sidenav-container/mat-sidenav/div/div/div[1]/div[2]/table/tr[10]/td/mat-nav-list/a[1]')
+    BUTTON_OPERATOR = (By.XPATH, "//input[@placeholder='ФИО и персональные данные']")
+    OPERATOR_BUTTON = (By.CSS_SELECTOR, "span[class='mdc-list-item__primary-text']")
+    LOGIN_OPERATOR = (By.XPATH, "//input[@placeholder='Логин']")
+    PASSWORD_OPERATOR = (By.XPATH, "//input[@placeholder='Пароль']")
+    REPLY_PASSWORD = (By.XPATH, "//input[@placeholder='Повторите пароль']")
+    CHECK_BOX_OPERATOR = (By.XPATH, "//label[contains(text(), 'Активен')]")
+    CONTACT_INFORM = (By.XPATH, '//div[@class="wrapper" and contains(text(), "Контактная информация")]')
+    EMAIL_SEARCH = (By.XPATH, ".//input[@autocomplete='email']")
+    BUTTON_TEXT = (By.CSS_SELECTOR, '#body > app-root > div > app-toolbar > div > mat-toolbar > mat-toolbar-row > div > div:nth-child(5) > app-profile-brief > button > span.mdc-button__label')
+
+
+    #TODO - END
     LAST_NAME = (By.XPATH,
                  '/html/body/div[4]/div[2]/div/mat-dialog-container/div/div/app-show-obj-component/section/app-common-object-editor/div/app-person/lib-base-panel/section/div[2]/div[2]/div/div[1]/div/mat-form-field[1]/div[1]/div[2]/div/input')
     VISITORS_FRAME = (By.CSS_SELECTOR, 'div[class="content ng-star-inserted"]')

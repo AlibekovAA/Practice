@@ -37,7 +37,7 @@ class StartPage(BasePage):
         self.element_is_visible(self.locators.FIRST_NAME).send_keys(first_name)
         self.element_is_visible(self.locators.SAVE_PERSON).click()
         page_source = self.driver.page_source
-        if "Autotest T." in page_source:
+        if "Autotest T" in page_source:
             print("\nПользователь добавлен")
         else:
             print("\nНе удалось добавить пользователя")
@@ -90,7 +90,7 @@ class StartPage(BasePage):
         # self.element_is_visible(self.locators.INPUT_ACCESS_GROUP_IN_MY_APP).click()
         # self.element_is_visible(self.locators.BUTTON_IN_PROCESSING).click()
         # # time.sleep(3)
-        #self.element_is_visible(self.locators.CLOSE_WINDOW_MY_APP).click()
+        # self.element_is_visible(self.locators.CLOSE_WINDOW_MY_APP).click()
 
     def del_my_application(self):
         last_name = 'Autotest'
@@ -107,6 +107,7 @@ class StartPage(BasePage):
         self.element_is_visible(self.locators.INCOMING).click()
         string_table = self.elements_are_visible(self.locators.FIRST_STRING_IN_TABLE)
         string_table[0].click()
+
     def agreement_application(self):
         self.element_is_visible(self.locators.AGREEMENT_BUTTON).click()
         # number_pass = generated_pass_number()  # сделать рандомную генерацию
@@ -115,7 +116,7 @@ class StartPage(BasePage):
     def issue_pass(self):
         txt_1 = self.element_is_visible(self.locators.STATUS_AGREEMENT).text
         # print(txt_1) # написать функцию которая парсит текст и находит слово в []
-        #self.element_is_visible(self.locators.THREE_POINT_AGREEMENT).click()
+        # self.element_is_visible(self.locators.THREE_POINT_AGREEMENT).click()
         page_source = self.driver.page_source
         if "Шаблон согласия" in page_source:
             self.element_is_clickable(self.locators.BUTTON_ISSUE_PASS).click()
@@ -133,12 +134,12 @@ class StartPage(BasePage):
         self.element_is_visible(self.locators.SAVE_APPROVE).click()
         # # выдача пропуска
         # # сделать рандомный выбор HEX / DEC
-        #time.sleep(5)
+        # time.sleep(5)
         number_pass = random.randint(0, 10000)
         self.element_is_visible(self.locators.INPUT_NUMBER_PASS).send_keys(number_pass)
         self.element_is_visible(self.locators.BUTTON_OK_NUMBER_PASS).click()
         txt_3 = self.element_is_visible(self.locators.STATUS_AGREEMENT).text
-        txt_2 = parser_status(txt_3) #по идее парсер уже можно перенести сюда из test.py. Пока импортировал
+        txt_2 = parser_status(txt_3)  # По идее парсер уже можно перенести сюда из test.py. Пока импортировал
         self.element_is_visible(self.locators.CLOSE_WINDOW_MY_APP).click()
         # статусы Согласуется - разрешено - обработано
         return txt_2
@@ -162,7 +163,7 @@ class StartPage(BasePage):
         self.element_is_visible(self.locators.CLOSE_WINDOW_ACTIVATE_PASS).click()
 
     def copy_application(self):
-        # открыть заявку которую копировать
+        # открыть заявку, которую копировать
         self.element_is_visible(self.locators.MENU).click()
         self.element_is_visible(self.locators.MY_APPLICATION).click()
         self.element_is_visible(self.locators.CHOOSE_FIRST_LINE).click()
@@ -179,14 +180,77 @@ class StartPage(BasePage):
         self.element_is_visible(self.locators.BUTTON_ISSUE_ANOTHER_PASS).click()
         self.element_is_visible(self.locators.BUTTON_YES_PO).click()
 
-    def check_pass(self):
-        txt_3 = self.element_is_visible(self.locators.STATUS_AGREEMENT).text
-        txt_1 = parser_status(txt_3)
-        return txt_1
+    def check_status(self):
+        # self.element_is_visible(self.locators.MENU).click() - если меню закрыто - раскомментить
+        self.element_is_visible(self.locators.MY_APPLICATION_STATUS).click()
+        self.element_is_visible(self.locators.CHOOSE_FIRST_LINE).click()
+        txt_2 = parser_status(self.element_is_visible(self.locators.STATUS_AGREEMENT).text)
+        return txt_2
 
     # def parser_status(txt):
     #     text = txt.split('[', 1)[1].split(']')[0]
     #     return text
+    def add_employee(self):
+        last_name = 'Testov'
+        first_name = 'Testь'
+        mail = 'AutotestT12@mail.ru'
+        self.element_is_visible(self.locators.MENU).click()
+        self.element_is_visible(self.locators.VISITORS).click()
+        self.element_is_visible(self.locators.BUTTON_ADD_VISITORS).click()
+        self.element_is_visible(self.locators.LAST_NAME).send_keys(last_name)
+        self.element_is_visible(self.locators.FIRST_NAME).send_keys(first_name)
+        self.element_is_present(self.locators.ADD_INFORM).click()
+        self.element_is_present(self.locators.DEL_CATEGORY).click()
+        self.element_is_visible(self.locators.BUTTON_SEARCH).send_keys('Сотрудники')
+        self.element_is_visible(self.locators.CATEGORY_BUTTON).click()
+        self.element_is_present(self.locators.CONTACT_INFORM).click()
+        self.element_is_visible(self.locators.EMAIL_SEARCH).send_keys(mail)
+        self.element_is_visible(self.locators.SAVE_PERSON).click()
+
+    def add_operator(self):
+        last_name = 'Testov '
+        first_name = 'Testь'
+        # self.element_is_visible(self.locators.MENU).click() - раскомментить, если меню закрыто
+        self.element_is_present(self.locators.OPERATORS).click()
+        self.element_is_visible(self.locators.BUTTON_ADD_VISITORS).click()
+        self.element_is_visible(self.locators.BUTTON_OPERATOR).send_keys(last_name + first_name)
+        listop = self.elements_are_visible(self.locators.OPERATOR_BUTTON)
+        listop[2].click()
+        login = 'operator'
+        password = 'Operator23.08'
+        self.element_is_visible(self.locators.LOGIN_OPERATOR).send_keys(login)
+        self.element_is_visible(self.locators.PASSWORD_OPERATOR).send_keys(password)
+        self.element_is_visible(self.locators.REPLY_PASSWORD).send_keys(password)
+        self.element_is_visible(self.locators.CHECK_BOX_OPERATOR).click()
+        self.element_is_visible(self.locators.SAVE_APPROVE).click()
+        self.element_is_clickable(self.locators.BUTTON_OK_NUMBER_PASS).click()
+
+    def open_new_url(self):
+        self.driver.switch_to.new_window()
+        self.driver.get('http://localhost/auth/login')
+        login = 'operator'
+        password = 'Operator23.08'
+        self.element_is_visible(self.locators.LOGIN).send_keys(login)
+        self.element_is_visible(self.locators.PASS).send_keys(password)
+        self.element_is_visible(self.locators.BUTTON_LOGIN).click()
+        self.element_is_visible(self.locators.BUTTON_TEXT)
+        return self.driver.current_url
+
+
+    def active_off(self):
+        window_admin = self.driver.window_handles[0]
+        self.driver.switch_to.window(window_admin)
+        self.element_is_visible(self.locators.CHOOSE_FIRST_LINE).click()
+        self.element_is_visible(self.locators.CHECK_BOX_OPERATOR).click()
+        self.element_is_visible(self.locators.SAVE_APPROVE).click()
+        self.element_is_visible(self.locators.BUTTON_OK_NUMBER_PASS).click()
+        time.sleep(0.1) #TODO - слишком быстро прокликивает и не успевает увидеть второй раз кнопку ок.
+        #TODO - по идее можно попробовать через крестик, но у меня возникли с этим проблемы
+        self.element_is_visible(self.locators.BUTTON_OK).click()
+        window_operator = self.driver.window_handles[1]
+        self.driver.switch_to.window(window_operator)
+        return self.driver.current_url
+
 
     def open_menu(self):
         self.element_is_visible(self.locators.MENU).click()
