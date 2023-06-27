@@ -28,6 +28,8 @@ class BasePage:
 
     def element_is_clickable(self, locator, timeout=5):
         return wait(self.driver, timeout).until(EC.element_to_be_clickable(locator))
+        # return wait.until(EC.element_to_be_clickable(locator)) && wait.until(EC.presence_of_element_located(locator))
+
 
     def go_to_element(self, element):
         self.driver.execute_script("arguments[0].scrollIntoView();", element)
@@ -42,9 +44,9 @@ class BasePage:
         action.context_click(element)
         action.perform()
 
-    def parser_status(txt):
-        text = txt.split('[', 1)[1].split(']')[0]
-        return text
+    # def parser_status(txt):
+    #     text = txt.split('[', 1)[1].split(']')[0]
+    #     return text
 
     # def switch_to_new_tab(self):
 
