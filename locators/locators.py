@@ -8,10 +8,9 @@ class LoginPageLocators:
                     'button[class="mat-mdc-tooltip-trigger login__form__btn mdc-button mdc-button--raised mat-mdc-raised-button mat-primary mat-mdc-button-base"]')
     BUTTON_EXIT = (By.CSS_SELECTOR,
                    "#body > app-root > div > app-toolbar > div > mat-toolbar > mat-toolbar-row > div > div:nth-child(5) > app-profile-brief > button > span.mdc-button__label")
-    MENU = (By.CSS_SELECTOR, "span[class='mat-mdc-button-touch-target']")
 
 
-class StartPageLocators:
+class StartPageLocators(LoginPageLocators):
     MENU = (By.CSS_SELECTOR, "span[class='mat-mdc-button-touch-target']")
     BUTTON_OPEN_ALL = "/html/body/app-root/div/app-content/mat-sidenav-container/mat-sidenav/div/div/div[1]/div[1]/div/button/span[1]"
     VISITORS = (By.CSS_SELECTOR, 'a[href="listedData/PersonByCategory/16"]')
@@ -71,6 +70,22 @@ class StartPageLocators:
                    '#body > app-root > div > app-toolbar > div > mat-toolbar > mat-toolbar-row > div > div:nth-child(5) > app-profile-brief > button > span.mdc-button__label')
     # TODO - END
 
+    # TODO - настройки интеграции
+    LOG = (By.ID, "new-username")
+    INPUT_URL = (By.XPATH, "//textarea[@placeholder='URL СКД']")
+    EVENT = (By.XPATH, "//span[@class='mdc-list-item__content']//div[@class='wrapper']")
+    CHECKBOX_INTEGRATION = (By.XPATH, "//label[contains(text(), 'Получать события через RabbitMQ')]")
+    INPUT_WEB_SERVER = (By.XPATH, "//input[@placeholder='URL веб сервера']")
+    INPUT_URL_RABBIT = (By.XPATH, "//input[@placeholder='URL-адрес RabbitMQ']")
+    INPUT_PORT = (By.XPATH, "//input[@placeholder='Порт']")
+    INPUT_NAME = (By.XPATH, "//input[@placeholder='Имя пользователя']")
+    INPUT_QUEUE = (By.XPATH, "//input[@placeholder='Название очереди']")
+    ACTIVE_BUTTON = (By.XPATH, "//span[contains(text(), 'Активировать')]")
+    # TODO - END
+
+    MENU_INTEGRATION = (By.CSS_SELECTOR, "#body > app-root > div > app-content > mat-sidenav-container > mat-sidenav > div > div > div:nth-child(1) > div.divLtr.ng-star-inserted > table > tr:nth-child(10) > td > mat-nav-list > a:nth-child(3) > span > span > div > div > div")
+    TEXT_ID = (By.XPATH, "//h3[@class='title ng-star-inserted']")
+    INPUT_WORKER = (By.XPATH, "//input[@placeholder='Работник']")
     MENU_STAFF = (By.XPATH,
                   '/html/body/app-root/div/app-content/mat-sidenav-container/mat-sidenav/div/div/div[1]/div[2]/table/tr[10]/td/mat-nav-list/a[1]')
     BUTTON_PASS = (By.XPATH, "//span[contains(text(), 'Гостевой пропуск')]")

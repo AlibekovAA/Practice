@@ -20,7 +20,8 @@ def test_login_form(driver):
 def test_add_visitor(driver):
     url = test_login_form(driver)
     start_page = StartPage(driver, url)
-    start_page.add_visitors()
+    id_visitor = start_page.add_visitors()
+    assert start_page.check_visitor_id(id_visitor), "Ошибка при добавлении посетителя"
     return driver.current_url
 
 
@@ -30,7 +31,8 @@ def test_add_visitor(driver):
 def test_del_visitor(driver):
     url = test_login_form(driver)
     start_page = StartPage(driver, url)
-    start_page.del_visitors()
+    last_name, first_name = start_page.del_visitors()
+    assert not start_page.check_visitor_fio(last_name, first_name), "Ошибка при удалении посетителя"
     return driver.current_url
 
 
@@ -52,6 +54,8 @@ def test_create_my_application(driver):
     txt = 'Постоянный'
     if txt != 'Гостевой':
         start_page.add_employee()
+    else:
+        start_page.add_visitors()
     start_page.add_my_application(txt)
     start_page.open_incoming()
     # """Перевод заявки в согласие и выдача заявки"""
@@ -109,3 +113,9 @@ def test_del_operator(driver):
     start_page = StartPage(driver, url)
     start_page.del_operator()
     return driver.current_url
+
+
+def test_integration_lyrix(driver):
+    url = test_login_form(driver)
+    start_page = StartPage(driver, url)
+    start_page.integration_lyrix()

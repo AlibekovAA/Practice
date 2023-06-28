@@ -3,8 +3,8 @@ import time
 from locators.locators import LoginPageLocators, StartPageLocators
 import random
 from Pages.base_page import BasePage
+from selenium.webdriver.common.keys import Keys
 from generator import generated_pass_number
-from test import parser_status
 
 
 class LoginPage(BasePage):
@@ -19,7 +19,7 @@ class LoginPage(BasePage):
         return
 
     def check_login(self):
-        button_exit = self.element_is_clickable(self.locators.BUTTON_EXIT)
+        self.element_is_clickable(self.locators.BUTTON_EXIT)
         return self.driver.current_url
 
 
@@ -27,34 +27,27 @@ class StartPage(BasePage):
     locators = StartPageLocators()
 
     def add_visitors(self):
-        txt = 'Посетители'
         last_name = 'Autotest'
         first_name = 'Test'
         self.element_is_visible(self.locators.MENU).click()
         self.element_is_visible(self.locators.VISITORS).click()
         self.element_is_visible(self.locators.BUTTON_ADD_VISITORS).click()
+        text_id = self.element_is_visible(self.locators.TEXT_ID).text
         self.element_is_visible(self.locators.LAST_NAME).send_keys(last_name)
         self.element_is_visible(self.locators.FIRST_NAME).send_keys(first_name)
         self.element_is_visible(self.locators.SAVE_PERSON).click()
-        page_source = self.driver.page_source
-        if "Autotest T" in page_source:
-            print("\nПользователь добавлен")
-        else:
-            print("\nНе удалось добавить пользователя")
-        return last_name, first_name
+        return text_id
 
     def del_visitors(self):
         last_name = 'Autotest '
         first_name = 'Test'
-        fi_name = last_name + first_name[0]
         self.element_is_visible(self.locators.MENU).click()
         self.element_is_visible(self.locators.VISITORS).click()
-        self.element_is_visible(self.locators.FIND_VISITORS).send_keys(fi_name)
-        checkbox_button = self.elements_are_present(self.locators.FIND_CHECKBOX)
-        checkbox_button[1].click()
+        self.element_is_visible(self.locators.FIND_VISITORS).send_keys(last_name + first_name[0])
+        self.elements_are_present(self.locators.FIND_CHECKBOX)[1].click()
         self.element_is_clickable(self.locators.BUTTON_DEL).click()
         self.element_is_clickable(self.locators.BUTTON_OK).click()
-        return fi_name
+        return last_name, first_name
 
     def add_access_group(self):
         name_access_group = 'Футбол'
@@ -70,8 +63,6 @@ class StartPage(BasePage):
         name_access_group = 'Авто'
         first_name = 'Test'
         fi_name = last_name + first_name
-        if number == 'Гостевой':
-            self.element_is_visible(self.locators.MENU).click()
         self.element_is_clickable(self.locators.MY_APPLICATION).click()
         self.element_is_visible(self.locators.BUTTON_ADD_VISITORS).click()
         mess = self.switch_to_pass(number)
@@ -91,15 +82,14 @@ class StartPage(BasePage):
         self.element_is_visible(self.locators.MENU).click()
         self.element_is_visible(self.locators.MY_APPLICATION).click()
         self.element_is_visible(self.locators.FIND_APPLICATION).send_keys(last_name)
-        checkbox_button = self.elements_are_present(self.locators.CHECKBOX_APPLICATION)
-        checkbox_button[1].click()
+        self.elements_are_present(self.locators.CHECKBOX_APPLICATION)[1].click()
         self.element_is_clickable(self.locators.DEL_APPLICATION).click()
         self.element_is_clickable(self.locators.BUTTON_OK).click()
 
     def open_incoming(self):
         # self.element_is_visible(self.locators.MENU).click()  # закомментить при необходимости
-        string_table = self.elements_are_visible(self.locators.FIRST_STRING_IN_TABLE)
-        string_table[0].click()
+        self.element_is_visible(self.locators.INCOMING).click()
+        self.elements_are_visible(self.locators.FIRST_STRING_IN_TABLE)[0].click()
 
     def agreement_application(self):
         self.element_is_visible(self.locators.AGREEMENT_BUTTON).click()
@@ -108,30 +98,20 @@ class StartPage(BasePage):
 
     def issue_pass(self):
         txt_1 = self.element_is_visible(self.locators.STATUS_AGREEMENT).text
-        # print(txt_1) # написать функцию которая парсит текст и находит слово в []
-        # self.element_is_visible(self.locators.THREE_POINT_AGREEMENT).click()
         page_source = self.driver.page_source
         if "Шаблон согласия" in page_source:
             self.element_is_visible(self.locators.BUTTON_OK).click()
         return txt_1
 
     def signing_receiving_pass(self, txt):
-        # if self.parser_status(txt_1) == "Согласуется":
-        #     # # approve согласие на новом пользаке
-        #     self.element_is_visible(self.locators.BUTTON_OK_PATTERN_APPROVE).click()
-        #     # ТЕПЕРЬ МЫ ТУТ УРАААА
-        #     time.sleep(5)
         if txt == 'Гостевой':
             self.element_is_clickable(self.locators.CHECK_BOX_APPROVE).click()
             self.element_is_visible(self.locators.SAVE_APPROVE).click()
-        # # выдача пропуска
-        # # сделать рандомный выбор HEX / DEC
-        # time.sleep(5)
         number_pass = random.randint(0, 100000)
         self.element_is_visible(self.locators.INPUT_NUMBER_PASS).send_keys(number_pass)
         self.element_is_visible(self.locators.BUTTON_OK).click()
         txt_3 = self.element_is_visible(self.locators.STATUS_AGREEMENT).text
-        txt_2 = parser_status(txt_3)  # По идее парсер уже можно перенести сюда из test.py. Пока импортировал
+        txt_2 = self.parser_status(txt_3)
         self.element_is_visible(self.locators.CLOSE_WINDOW_MY_APP).click()
         # статусы Согласуется - разрешено - обработано
         return txt_2
@@ -143,8 +123,6 @@ class StartPage(BasePage):
         self.element_is_visible(self.locators.ANNUL_BUTTON).click()
 
     def withdraw_pass(self):
-        # url = 'http://localhost/listedData/passDictionaryActive'
-        # open(url)
         self.element_is_visible(self.locators.BUTTON_ACTIVE_PASS).click()
 
         self.element_is_visible(self.locators.CHOOSE_FIRST_LINE).click()
@@ -175,14 +153,14 @@ class StartPage(BasePage):
     def check_status(self):
         # self.element_is_visible(self.locators.MENU).click() #- если меню закрыто - раскомментить
         self.element_is_visible(self.locators.MY_APPLICATION_STATUS).click()
-        string_table = self.elements_are_visible(self.locators.FIRST_STRING_IN_TABLE)
-        string_table[0].click()
-        txt_2 = parser_status(self.element_is_visible(self.locators.STATUS_AGREEMENT).text)
+        self.elements_are_visible(self.locators.FIRST_STRING_IN_TABLE)[0].click()
+        txt_2 = self.parser_status(self.element_is_visible(self.locators.STATUS_AGREEMENT).text)
         return txt_2
 
-    # def parser_status(txt):
-    #     text = txt.split('[', 1)[1].split(']')[0]
-    #     return text
+    def parser_status(self, txt):
+        text = txt.split('[', 1)[1].split(']')[0]
+        return text
+
     def add_employee(self):
         last_name = 'Autotest'
         first_name = 'Test'
@@ -199,7 +177,6 @@ class StartPage(BasePage):
         self.element_is_present(self.locators.CONTACT_INFORM).click()
         self.element_is_visible(self.locators.EMAIL_SEARCH).send_keys(mail)
         self.element_is_visible(self.locators.SAVE_PERSON).click()
-        # self.element_is_visible(self.locators.MENU).click() # - закомментить при необходимости
 
     def add_operator(self):
         last_name = 'Autotest '
@@ -224,10 +201,9 @@ class StartPage(BasePage):
         self.driver.get('http://localhost/auth/login')
         login = 'operator'
         password = 'Operator23.08'
-        login_page = LoginPage(BasePage, 'http://localhost/auth/login')
-        self.element_is_visible(login_page.locators.LOGIN).send_keys(login)
-        self.element_is_visible(login_page.locators.PASS).send_keys(password)
-        self.element_is_visible(login_page.locators.BUTTON_LOGIN).click()
+        self.element_is_visible(self.locators.LOGIN).send_keys(login)
+        self.element_is_visible(self.locators.PASS).send_keys(password)
+        self.element_is_visible(self.locators.BUTTON_LOGIN).click()
         self.element_is_visible(self.locators.BUTTON_TEXT)
         return self.driver.current_url
 
@@ -260,10 +236,109 @@ class StartPage(BasePage):
 
     def del_operator(self):
         self.element_is_visible(self.locators.MENU).click()
-        self.element_is_visible(self.locators.MENU_STAFF).click()
+        self.element_is_clickable(self.locators.MENU_STAFF).click()
         last_name = 'Autotest'
         self.element_is_visible(self.locators.FIND_APPLICATION).send_keys(last_name)
         checkbox_button = self.elements_are_present(self.locators.FIND_CHECKBOX)
         checkbox_button[1].click()
         self.element_is_clickable(self.locators.BUTTON_DEL).click()
         self.element_is_clickable(self.locators.BUTTON_OK).click()
+
+    def check_visitor_fio(self, last_name, first_name):
+        page_source = self.driver.page_source
+        if f"{last_name} {first_name[0]}" in page_source:
+            return True
+        else:
+            return False
+
+    def check_visitor_id(self, txt):
+        page_source = self.driver.page_source
+        id_visitor = self.parser_id(txt)
+        if id_visitor in page_source:
+            return True
+        else:
+            return False
+
+    def parser_id(self, txt):
+        return ''.join(i for i in txt if i.isdigit())
+
+    def integration_lyrix(self):
+        url_skd = "http://192.168.2.166:1234/AxisWebApp/services/CardlibIntegrationService2Port?wsdl"
+        login, pas, name, port, queue = '1', '1', 'test', 5672, 'PassOfficeQueue'
+        url_web = 'http://192.168.2.166:8089'
+        base_url = url_web.split(':')[0] + '://' + url_web.split('//')[1].split(':')[0]
+        self.element_is_visible(self.locators.MENU).click()
+        self.element_is_visible(self.locators.MENU_INTEGRATION).click()
+        # TODO - работает только если LyriX первый в списке
+        self.element_is_visible(self.locators.CHOOSE_FIRST_LINE).click()
+        self.element_is_visible(self.locators.LOG).clear()
+        self.element_is_visible(self.locators.LOG).send_keys(login)
+        self.element_is_visible(self.locators.PASSWORD_OPERATOR).clear()
+        self.element_is_visible(self.locators.PASSWORD_OPERATOR).send_keys(pas)
+        self.element_is_visible(self.locators.INPUT_URL).send_keys(Keys.CONTROL + 'a')
+        self.element_is_visible(self.locators.INPUT_URL).send_keys(Keys.DELETE)
+        self.element_is_visible(self.locators.INPUT_URL).send_keys(url_skd)
+        self.elements_are_visible(self.locators.EVENT)[1].click()
+        self.element_is_visible(
+            self.locators.CHECKBOX_INTEGRATION).click()  # TODO - доработать вариант с уже активным checkbox
+        self.element_is_visible(self.locators.INPUT_WEB_SERVER).send_keys(Keys.CONTROL + 'a')
+        self.element_is_visible(self.locators.INPUT_WEB_SERVER).send_keys(Keys.DELETE)
+        self.element_is_visible(self.locators.INPUT_WEB_SERVER).send_keys(url_web)
+        self.element_is_visible(self.locators.INPUT_URL_RABBIT).clear()
+        self.element_is_visible(self.locators.INPUT_URL_RABBIT).send_keys(base_url)
+        self.element_is_visible(self.locators.INPUT_PORT).clear()
+        self.element_is_visible(self.locators.INPUT_PORT).send_keys(port)
+        self.element_is_visible(self.locators.INPUT_NAME).clear()
+        self.element_is_visible(self.locators.INPUT_NAME).send_keys(name)
+        self.element_is_visible(self.locators.PASSWORD_OPERATOR).clear()
+        self.element_is_visible(self.locators.PASSWORD_OPERATOR).send_keys(name)
+        self.element_is_visible(self.locators.INPUT_QUEUE).clear()
+        self.element_is_visible(self.locators.INPUT_QUEUE).send_keys(queue)
+        self.element_is_visible(self.locators.ACTIVE_BUTTON).click()
+        self.element_is_clickable(self.locators.BUTTON_OK).click()
+        time.sleep(0.1)
+        self.element_is_visible(self.locators.BUTTON_OK).click()
+
+
+    # TODO - на будущее для других интеграций
+    # def set_input_value(self, locator, value):
+    #     element = self.element_is_visible(locator)
+    #     element.clear()
+    #     element.send_keys(value)
+    #
+    # def set_input_web_server_and_queue(self, url_web, queue):
+    #     self.set_input_value(self.locators.INPUT_WEB_SERVER, url_web)
+    #     self.set_input_value(self.locators.INPUT_QUEUE, queue)
+    #
+    # def integration_lyrix(self):
+    #     url_skd = "http://192.168.2.166:1234/AxisWebApp/services/CardlibIntegrationService2Port?wsdl"
+    #     login, pas, name, port, queue = '1', '1', 'test', 5672, 'PassOfficeQueue'
+    #     url_web = 'http://192.168.2.166:8089'
+    #     base_url = url_web.split(':')[0] + '://' + url_web.split('//')[1].split(':')[0]
+    #
+    #     self.element_is_visible(self.locators.MENU).click()
+    #     self.element_is_visible(self.locators.MENU_INTEGRATION).click()
+    #     # TODO - работает только если LyriX первый в списке
+    #     self.element_is_visible(self.locators.CHOOSE_FIRST_LINE).click()
+    #
+    #     self.set_input_value(self.locators.LOG, login)
+    #     self.set_input_value(self.locators.PASSWORD_OPERATOR, pas)
+    #     self.set_input_value(self.locators.INPUT_URL, url_skd)
+    #
+    #     self.elements_are_visible(self.locators.EVENT)[1].click()
+    #     self.element_is_visible(
+    #         self.locators.CHECKBOX_INTEGRATION).click()  # TODO - доработать вариант с уже активным checkbox
+    #
+    #     self.set_input_web_server_and_queue(url_web, queue)
+    #
+    #     self.set_input_value(self.locators.INPUT_URL_RABBIT, base_url)
+    #     self.set_input_value(self.locators.INPUT_PORT, port)
+    #     self.set_input_value(self.locators.INPUT_NAME, name)
+    #     self.set_input_value(self.locators.PASSWORD_OPERATOR, name)
+    #
+    #     self.element_is_visible(self.locators.ACTIVE_BUTTON).click()
+    #     self.element_is_clickable(self.locators.BUTTON_OK).click()
+    #     time.sleep(0.1)
+    #     self.element_is_visible(self.locators.BUTTON_OK).click()
+
+
