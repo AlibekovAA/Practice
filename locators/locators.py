@@ -49,9 +49,9 @@ class StartPageLocators(LoginPageLocators):
     STATUS_AGREEMENT = (By.CSS_SELECTOR,
                         ' div > app-show-obj-component > section > app-common-object-editor > div > app-request > lib-base-panel > section > div.cdk-drag.cdk-drag-handle.left-side > h3')
     INPUT_ACCESS_GROUP_IN_MY_APP = (By.XPATH, '/html/body/div[4]/div[3]/div/div/mat-option/span')
-    # TODO - END
+    #TODO - END
 
-    # TODO - Кейс_7
+    #TODO - Кейс_7
     ADD_INFORM = (By.XPATH, '//div[@class="wrapper" and contains(text(), "Доп. информация")]')
     DEL_CATEGORY = (By.XPATH, '//*[@class="mat-icon notranslate mat-mdc-tooltip-trigger mat-primary ng-star-inserted"]')
     BUTTON_SEARCH = (By.XPATH, "//input[@placeholder='Категория']")
@@ -68,20 +68,23 @@ class StartPageLocators(LoginPageLocators):
     EMAIL_SEARCH = (By.XPATH, ".//input[@autocomplete='email']")
     BUTTON_TEXT = (By.CSS_SELECTOR,
                    '#body > app-root > div > app-toolbar > div > mat-toolbar > mat-toolbar-row > div > div:nth-child(5) > app-profile-brief > button > span.mdc-button__label')
-    # TODO - END
+    #TODO - END
 
-    # TODO - настройки интеграции
+    #TODO - настройки интеграции
     LOG = (By.ID, "new-username")
     INPUT_URL = (By.XPATH, "//textarea[@placeholder='URL СКД']")
     EVENT = (By.XPATH, "//span[@class='mdc-list-item__content']//div[@class='wrapper']")
     CHECKBOX_INTEGRATION = (By.XPATH, "//label[contains(text(), 'Получать события через RabbitMQ')]")
+
     INPUT_WEB_SERVER = (By.XPATH, "//input[@placeholder='URL веб сервера']")
     INPUT_URL_RABBIT = (By.XPATH, "//input[@placeholder='URL-адрес RabbitMQ']")
     INPUT_PORT = (By.XPATH, "//input[@placeholder='Порт']")
     INPUT_NAME = (By.XPATH, "//input[@placeholder='Имя пользователя']")
     INPUT_QUEUE = (By.XPATH, "//input[@placeholder='Название очереди']")
-    ACTIVE_BUTTON = (By.XPATH, "//span[contains(text(), 'Активировать')]")
-    # TODO - END
+    ACTIVE_BUTTON = (By.XPATH, "//span[contains(text(), 'Активировать') or contains(text(), 'Реактивировать')]")
+    BUTTON_CANCEL = (By.XPATH, '//button[@class="mdc-button mat-mdc-button mat-primary mat-mdc-button-base"]')
+    BUTTON_CHECK = (By.CSS_SELECTOR, "#body > app-root > div > app-content > mat-sidenav-container > mat-sidenav-content > div > app-listed-data > app-paged-object-list2 > mat-drawer-container > mat-drawer-content > div > div.table-container > table > tbody > tr:nth-child(1) > td.mat-mdc-cell.mdc-data-table__cell.cdk-cell.cdk-column-active.mat-column-active.table-cell.ng-star-inserted > div > div")
+    #TODO - END
 
     MENU_INTEGRATION = (By.CSS_SELECTOR, "#body > app-root > div > app-content > mat-sidenav-container > mat-sidenav > div > div > div:nth-child(1) > div.divLtr.ng-star-inserted > table > tr:nth-child(10) > td > mat-nav-list > a:nth-child(3) > span > span > div > div > div")
     TEXT_ID = (By.XPATH, "//h3[@class='title ng-star-inserted']")

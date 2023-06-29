@@ -1,5 +1,7 @@
 import time
 
+from selenium.common import TimeoutException
+
 from locators.locators import LoginPageLocators, StartPageLocators
 import random
 from Pages.base_page import BasePage
@@ -262,15 +264,11 @@ class StartPage(BasePage):
     def parser_id(self, txt):
         return ''.join(i for i in txt if i.isdigit())
 
-    def integration_lyrix(self):
-        url_skd = "http://192.168.2.166:1234/AxisWebApp/services/CardlibIntegrationService2Port?wsdl"
-        login, pas, name, port, queue = '1', '1', 'test', 5672, 'PassOfficeQueue'
-        url_web = 'http://192.168.2.166:8089'
-        base_url = url_web.split(':')[0] + '://' + url_web.split('//')[1].split(':')[0]
-        self.element_is_visible(self.locators.MENU).click()
-        self.element_is_visible(self.locators.MENU_INTEGRATION).click()
-        # TODO - работает только если LyriX первый в списке
-        self.element_is_visible(self.locators.CHOOSE_FIRST_LINE).click()
+    # TODO - Работает. Есть три недоработки.
+    # TODO - 1: Checkbox плохо распознается. Приходится обрабатывать исключение.
+    # TODO - 2: Из-за одинаковых элементов выскакивает ошибка наложения. Работает также через обработку исключения.
+    # TODO - 3: Из-за того, что поиск не работает по названию и может меняться ID невозможно выбрать то, что нам надо. Обрабатываем только первую строку.
+    def fill_credentials(self, login, pas, url_skd):
         self.element_is_visible(self.locators.LOG).clear()
         self.element_is_visible(self.locators.LOG).send_keys(login)
         self.element_is_visible(self.locators.PASSWORD_OPERATOR).clear()
@@ -278,12 +276,10 @@ class StartPage(BasePage):
         self.element_is_visible(self.locators.INPUT_URL).send_keys(Keys.CONTROL + 'a')
         self.element_is_visible(self.locators.INPUT_URL).send_keys(Keys.DELETE)
         self.element_is_visible(self.locators.INPUT_URL).send_keys(url_skd)
-        self.elements_are_visible(self.locators.EVENT)[1].click()
-        self.element_is_visible(
-            self.locators.CHECKBOX_INTEGRATION).click()  # TODO - доработать вариант с уже активным checkbox
-        self.element_is_visible(self.locators.INPUT_WEB_SERVER).send_keys(Keys.CONTROL + 'a')
-        self.element_is_visible(self.locators.INPUT_WEB_SERVER).send_keys(Keys.DELETE)
-        self.element_is_visible(self.locators.INPUT_WEB_SERVER).send_keys(url_web)
+
+    def configure_integration(self, url_web, port, name, base_url, queue):
+        self.element_is_visible(self.locators.CHECKBOX_INTEGRATION).click()
+        self.configure_rabbitmq_lyrix(url_web, queue)
         self.element_is_visible(self.locators.INPUT_URL_RABBIT).clear()
         self.element_is_visible(self.locators.INPUT_URL_RABBIT).send_keys(base_url)
         self.element_is_visible(self.locators.INPUT_PORT).clear()
@@ -292,53 +288,64 @@ class StartPage(BasePage):
         self.element_is_visible(self.locators.INPUT_NAME).send_keys(name)
         self.element_is_visible(self.locators.PASSWORD_OPERATOR).clear()
         self.element_is_visible(self.locators.PASSWORD_OPERATOR).send_keys(name)
-        self.element_is_visible(self.locators.INPUT_QUEUE).clear()
-        self.element_is_visible(self.locators.INPUT_QUEUE).send_keys(queue)
         self.element_is_visible(self.locators.ACTIVE_BUTTON).click()
         self.element_is_clickable(self.locators.BUTTON_OK).click()
         time.sleep(0.1)
-        self.element_is_visible(self.locators.BUTTON_OK).click()
+        self.element_is_clickable(self.locators.BUTTON_OK).click()
+        try:
+            self.elements_are_visible(self.locators.BUTTON_CANCEL, timeout=0.5)[2].click()
+        except IndexError:
+            self.elements_are_visible(self.locators.BUTTON_CANCEL)[2].click()
+        self.element_is_visible(self.locators.SAVE_APPROVE).click()
+        if 'Активация соединения' in self.driver.page_source:
+            self.element_is_clickable(self.locators.BUTTON_OK).click()
 
+    def configure_rabbitmq_lyrix(self, url_web, queue):
+        try:
+            input_con = self.element_is_visible(self.locators.INPUT_WEB_SERVER, timeout=0.1)
+        except TimeoutException:
+            self.element_is_visible(self.locators.CHECKBOX_INTEGRATION).click()
+            input_con = self.element_is_visible(self.locators.INPUT_WEB_SERVER)
+        input_con.send_keys(Keys.CONTROL + 'a')
+        input_con.send_keys(Keys.DELETE)
+        input_con.send_keys(url_web)
+        self.element_is_visible(self.locators.INPUT_QUEUE).clear()
+        self.element_is_visible(self.locators.INPUT_QUEUE).send_keys(queue)
 
-    # TODO - на будущее для других интеграций
-    # def set_input_value(self, locator, value):
-    #     element = self.element_is_visible(locator)
-    #     element.clear()
-    #     element.send_keys(value)
-    #
-    # def set_input_web_server_and_queue(self, url_web, queue):
-    #     self.set_input_value(self.locators.INPUT_WEB_SERVER, url_web)
-    #     self.set_input_value(self.locators.INPUT_QUEUE, queue)
-    #
-    # def integration_lyrix(self):
-    #     url_skd = "http://192.168.2.166:1234/AxisWebApp/services/CardlibIntegrationService2Port?wsdl"
-    #     login, pas, name, port, queue = '1', '1', 'test', 5672, 'PassOfficeQueue'
-    #     url_web = 'http://192.168.2.166:8089'
-    #     base_url = url_web.split(':')[0] + '://' + url_web.split('//')[1].split(':')[0]
-    #
-    #     self.element_is_visible(self.locators.MENU).click()
-    #     self.element_is_visible(self.locators.MENU_INTEGRATION).click()
-    #     # TODO - работает только если LyriX первый в списке
-    #     self.element_is_visible(self.locators.CHOOSE_FIRST_LINE).click()
-    #
-    #     self.set_input_value(self.locators.LOG, login)
-    #     self.set_input_value(self.locators.PASSWORD_OPERATOR, pas)
-    #     self.set_input_value(self.locators.INPUT_URL, url_skd)
-    #
-    #     self.elements_are_visible(self.locators.EVENT)[1].click()
-    #     self.element_is_visible(
-    #         self.locators.CHECKBOX_INTEGRATION).click()  # TODO - доработать вариант с уже активным checkbox
-    #
-    #     self.set_input_web_server_and_queue(url_web, queue)
-    #
-    #     self.set_input_value(self.locators.INPUT_URL_RABBIT, base_url)
-    #     self.set_input_value(self.locators.INPUT_PORT, port)
-    #     self.set_input_value(self.locators.INPUT_NAME, name)
-    #     self.set_input_value(self.locators.PASSWORD_OPERATOR, name)
-    #
-    #     self.element_is_visible(self.locators.ACTIVE_BUTTON).click()
-    #     self.element_is_clickable(self.locators.BUTTON_OK).click()
-    #     time.sleep(0.1)
-    #     self.element_is_visible(self.locators.BUTTON_OK).click()
+    def integration_lyrix(self):
+        url_skd = "http://192.168.2.166:1234/AxisWebApp/services/CardlibIntegrationService2Port?wsdl"
+        login, pas, name, port, queue = '1', '1', 'test', 5672, 'PassOfficeQueue'
+        url_web = 'http://192.168.2.166:8089'
+        base_url = url_web.split(':')[0] + '://' + url_web.split('//')[1].split(':')[0]
+        self.element_is_visible(self.locators.MENU).click()
+        self.element_is_visible(self.locators.MENU_INTEGRATION).click()
+        # TODO - работает только когда LyriX первый
+        self.element_is_visible(self.locators.CHOOSE_FIRST_LINE).click()
+        self.fill_credentials(login, pas, url_skd)
+        self.elements_are_visible(self.locators.EVENT)[1].click()
+        self.configure_integration(url_web, port, name, base_url, queue)
+        return self.element_is_visible(self.locators.BUTTON_CHECK).text
 
+    def integration_APACS(self):
+        url_skd = "http://192.168.2.166:1234/AxisWebApp/services/CardlibIntegrationService2Port?wsdl"
+        login, pas, name, port, queue = '1', '1', 'test', 5672, 'PassOfficeQueue'
+        url_web = 'http://192.168.2.166:8089'
+        base_url = url_web.split(':')[0] + '://' + url_web.split('//')[1].split(':')[0]
+        self.element_is_visible(self.locators.MENU).click()
+        self.element_is_visible(self.locators.MENU_INTEGRATION).click()
+        # TODO - работает только когда APACS первый
+        self.element_is_visible(self.locators.CHOOSE_FIRST_LINE).click()
+        self.fill_credentials(login, pas, url_skd)
+        self.elements_are_visible(self.locators.EVENT)[1].click()
+        self.configure_integration(url_web, port, name, base_url, queue)
+        return '✓'
 
+    def switch_integration(self, name):
+        SKD = {
+            'LyriX': self.integration_lyrix,
+            'APACS': self.integration_APACS
+        }
+
+        if name in SKD:
+            integration_function = SKD[name]
+            integration_function()

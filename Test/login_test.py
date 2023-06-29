@@ -118,4 +118,12 @@ def test_del_operator(driver):
 def test_integration_lyrix(driver):
     url = test_login_form(driver)
     start_page = StartPage(driver, url)
-    start_page.integration_lyrix()
+    var = '✓'
+    assert start_page.integration_lyrix() == var, "Произошла ошибка интеграции LyriX"
+
+
+def test_integration_apacs(driver):
+    url = test_login_form(driver)
+    start_page = StartPage(driver, url)
+    var = '✓'
+    assert start_page.integration_APACS() == var, "Произошла ошибка интеграции APACS"
