@@ -2,7 +2,7 @@ import time
 
 from Pages.login_page import LoginPage, StartPage
 
-"""Авторизация  Обдумать над чеком автоизации"""
+"""Авторизация"""
 
 
 def test_login_form(driver):
@@ -22,7 +22,6 @@ def test_add_visitor(driver):
     start_page = StartPage(driver, url)
     id_visitor = start_page.add_visitors()
     assert start_page.check_visitor_id(id_visitor), "Ошибка при добавлении посетителя"
-    return driver.current_url
 
 
 """Удаление посетителя"""
@@ -33,7 +32,6 @@ def test_del_visitor(driver):
     start_page = StartPage(driver, url)
     last_name, first_name = start_page.del_visitors()
     assert not start_page.check_visitor_fio(last_name, first_name), "Ошибка при удалении посетителя"
-    return driver.current_url
 
 
 """Создание Группы Доступа"""
@@ -108,22 +106,49 @@ def test_copy_application(driver):
     start_page.signing_receiving_pass('a')
 
 
+"""Удаление оператора"""
+
+
 def test_del_operator(driver):
     url = test_login_form(driver)
     start_page = StartPage(driver, url)
-    start_page.del_operator()
-    return driver.current_url
+    name = 'Операторы'
+    last_name, first_name = start_page.del_operator(name)
+    assert not start_page.check_visitor_fio(last_name, first_name), f"Ошибка при удалении в разделе {name}"
 
 
-def test_integration_lyrix(driver):
+def test_integration(driver):
     url = test_login_form(driver)
     start_page = StartPage(driver, url)
+    name = 'LyriX'
     var = '✓'
-    assert start_page.integration_lyrix() == var, "Произошла ошибка интеграции LyriX"
+    assert start_page.switch_integration(name) == var, f"Произошла ошибка интеграции {name}"
 
 
-def test_integration_apacs(driver):
+"""Удаление сотрудника"""
+
+
+def test_del_employee(driver):
     url = test_login_form(driver)
     start_page = StartPage(driver, url)
-    var = '✓'
-    assert start_page.integration_APACS() == var, "Произошла ошибка интеграции APACS"
+    name = 'Сотрудники'
+    last_name, first_name = start_page.del_operator(name)
+    assert not start_page.check_visitor_fio(last_name, first_name), f"Ошибка при удалении в разделе {name}"
+
+
+"""Кейс №7 с удалением всего созданного за собой"""
+
+
+def test_case_7_all(driver):
+    url = test_login_form(driver)
+    start_page = StartPage(driver, url)
+    start_page.add_employee()
+    start_page.add_operator()
+    old_url = start_page.open_new_url()
+    new_url = start_page.active_off()
+    assert old_url == new_url, "\nПроизошла ошибка"
+    driver.switch_to.window(driver.window_handles[0])
+    name = 'Операторы'
+    assert start_page.del_operator(name), f"Ошибка при удалении в разделе {name}"
+    name = 'Сотрудники'
+    assert start_page.del_operator(name), f"Ошибка при удалении в разделе {name}"

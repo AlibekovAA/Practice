@@ -1,7 +1,5 @@
 import time
 
-from selenium.common import TimeoutException
-
 from locators.locators import LoginPageLocators, StartPageLocators
 import random
 from Pages.base_page import BasePage
@@ -84,7 +82,7 @@ class StartPage(BasePage):
         self.element_is_visible(self.locators.MENU).click()
         self.element_is_visible(self.locators.MY_APPLICATION).click()
         self.element_is_visible(self.locators.FIND_APPLICATION).send_keys(last_name)
-        self.elements_are_present(self.locators.CHECKBOX_APPLICATION)[1].click()
+        self.elements_are_present(self.locators.FIND_CHECKBOX)[1].click()
         self.element_is_clickable(self.locators.DEL_APPLICATION).click()
         self.element_is_clickable(self.locators.BUTTON_OK).click()
 
@@ -159,7 +157,8 @@ class StartPage(BasePage):
         txt_2 = self.parser_status(self.element_is_visible(self.locators.STATUS_AGREEMENT).text)
         return txt_2
 
-    def parser_status(self, txt):
+    @staticmethod
+    def parser_status(txt):
         text = txt.split('[', 1)[1].split(']')[0]
         return text
 
@@ -236,15 +235,18 @@ class StartPage(BasePage):
             self.element_is_visible(pass_options[number]).click()
             return "Success"
 
-    def del_operator(self):
+    def del_operator(self, name):
         self.element_is_visible(self.locators.MENU).click()
-        self.element_is_clickable(self.locators.MENU_STAFF).click()
+        if name == 'Сотрудники':
+            self.element_is_clickable(self.locators.MENU_EMPLOYEE).click()
+        else:
+            self.element_is_clickable(self.locators.MENU_STAFF).click()
         last_name = 'Autotest'
         self.element_is_visible(self.locators.FIND_APPLICATION).send_keys(last_name)
-        checkbox_button = self.elements_are_present(self.locators.FIND_CHECKBOX)
-        checkbox_button[1].click()
+        self.elements_are_present(self.locators.FIND_CHECKBOX)[1].click()
         self.element_is_clickable(self.locators.BUTTON_DEL).click()
         self.element_is_clickable(self.locators.BUTTON_OK).click()
+        return True
 
     def check_visitor_fio(self, last_name, first_name):
         page_source = self.driver.page_source
@@ -261,13 +263,13 @@ class StartPage(BasePage):
         else:
             return False
 
-    def parser_id(self, txt):
+    @staticmethod
+    def parser_id(txt):
         return ''.join(i for i in txt if i.isdigit())
 
-    # TODO - Работает. Есть три недоработки.
-    # TODO - 1: Checkbox плохо распознается. Приходится обрабатывать исключение.
-    # TODO - 2: Из-за одинаковых элементов выскакивает ошибка наложения. Работает также через обработку исключения.
-    # TODO - 3: Из-за того, что поиск не работает по названию и может меняться ID невозможно выбрать то, что нам надо. Обрабатываем только первую строку.
+    # TODO - Работает. Есть четыре недоработки.
+    # TODO - 3: Обрабатываю только первую строчку. Не работает поиск.
+    # TODO - 4: sleep 298 строка
     def fill_credentials(self, login, pas, url_skd):
         self.element_is_visible(self.locators.LOG).clear()
         self.element_is_visible(self.locators.LOG).send_keys(login)
@@ -277,11 +279,14 @@ class StartPage(BasePage):
         self.element_is_visible(self.locators.INPUT_URL).send_keys(Keys.DELETE)
         self.element_is_visible(self.locators.INPUT_URL).send_keys(url_skd)
 
-    def configure_integration(self, url_web, port, name, base_url, queue):
-        self.element_is_visible(self.locators.CHECKBOX_INTEGRATION).click()
-        self.configure_rabbitmq_lyrix(url_web, queue)
-        self.element_is_visible(self.locators.INPUT_URL_RABBIT).clear()
-        self.element_is_visible(self.locators.INPUT_URL_RABBIT).send_keys(base_url)
+    def configure_integration(self, url_web, port, name, base_url, queue, name_SKD):
+        check_box = self.element_is_present(self.locators.CHECKBOX_INTEGRATION)
+        if not check_box.get_attribute('aria-checked'):
+            check_box.click()
+        if name_SKD == "LyriX":
+            self.configure_rabbitmq_lyrix(url_web, queue, base_url)
+        elif name_SKD == "APACS":
+            self.configure_rabbitmq_APACS(base_url)
         self.element_is_visible(self.locators.INPUT_PORT).clear()
         self.element_is_visible(self.locators.INPUT_PORT).send_keys(port)
         self.element_is_visible(self.locators.INPUT_NAME).clear()
@@ -292,23 +297,18 @@ class StartPage(BasePage):
         self.element_is_clickable(self.locators.BUTTON_OK).click()
         time.sleep(0.1)
         self.element_is_clickable(self.locators.BUTTON_OK).click()
-        try:
-            self.elements_are_visible(self.locators.BUTTON_CANCEL, timeout=0.5)[2].click()
-        except IndexError:
-            self.elements_are_visible(self.locators.BUTTON_CANCEL)[2].click()
+        cancel_button = self.elements_are_present(self.locators.BUTTON_CANCEL)
+        self.driver.execute_script("arguments[0].click();", cancel_button[1])
         self.element_is_visible(self.locators.SAVE_APPROVE).click()
         if 'Активация соединения' in self.driver.page_source:
             self.element_is_clickable(self.locators.BUTTON_OK).click()
 
-    def configure_rabbitmq_lyrix(self, url_web, queue):
-        try:
-            input_con = self.element_is_visible(self.locators.INPUT_WEB_SERVER, timeout=0.1)
-        except TimeoutException:
-            self.element_is_visible(self.locators.CHECKBOX_INTEGRATION).click()
-            input_con = self.element_is_visible(self.locators.INPUT_WEB_SERVER)
-        input_con.send_keys(Keys.CONTROL + 'a')
-        input_con.send_keys(Keys.DELETE)
-        input_con.send_keys(url_web)
+    def configure_rabbitmq_lyrix(self, url_web, queue, base_url):
+        self.element_is_visible(self.locators.INPUT_WEB_SERVER).send_keys(Keys.CONTROL + 'a')
+        self.element_is_visible(self.locators.INPUT_WEB_SERVER).send_keys(Keys.DELETE)
+        self.element_is_visible(self.locators.INPUT_WEB_SERVER).send_keys(url_web)
+        self.element_is_visible(self.locators.INPUT_URL_RABBIT).clear()
+        self.element_is_visible(self.locators.INPUT_URL_RABBIT).send_keys(base_url)
         self.element_is_visible(self.locators.INPUT_QUEUE).clear()
         self.element_is_visible(self.locators.INPUT_QUEUE).send_keys(queue)
 
@@ -319,12 +319,15 @@ class StartPage(BasePage):
         base_url = url_web.split(':')[0] + '://' + url_web.split('//')[1].split(':')[0]
         self.element_is_visible(self.locators.MENU).click()
         self.element_is_visible(self.locators.MENU_INTEGRATION).click()
-        # TODO - работает только когда LyriX первый
         self.element_is_visible(self.locators.CHOOSE_FIRST_LINE).click()
         self.fill_credentials(login, pas, url_skd)
         self.elements_are_visible(self.locators.EVENT)[1].click()
-        self.configure_integration(url_web, port, name, base_url, queue)
+        self.configure_integration(url_web, port, name, base_url, queue, name_SKD="LyriX")
         return self.element_is_visible(self.locators.BUTTON_CHECK).text
+
+    def configure_rabbitmq_APACS(self, base_url):
+        self.element_is_visible(self.locators.INPUT_URL_RABBIT).clear()
+        self.element_is_visible(self.locators.INPUT_URL_RABBIT).send_keys(base_url)
 
     def integration_APACS(self):
         url_skd = "http://192.168.2.166:1234/AxisWebApp/services/CardlibIntegrationService2Port?wsdl"
@@ -333,12 +336,11 @@ class StartPage(BasePage):
         base_url = url_web.split(':')[0] + '://' + url_web.split('//')[1].split(':')[0]
         self.element_is_visible(self.locators.MENU).click()
         self.element_is_visible(self.locators.MENU_INTEGRATION).click()
-        # TODO - работает только когда APACS первый
         self.element_is_visible(self.locators.CHOOSE_FIRST_LINE).click()
         self.fill_credentials(login, pas, url_skd)
         self.elements_are_visible(self.locators.EVENT)[1].click()
-        self.configure_integration(url_web, port, name, base_url, queue)
-        return '✓'
+        self.configure_integration(url_web, port, name, base_url, queue, name_SKD="APACS")
+        return self.element_is_visible(self.locators.BUTTON_CHECK).text
 
     def switch_integration(self, name):
         SKD = {
@@ -348,4 +350,4 @@ class StartPage(BasePage):
 
         if name in SKD:
             integration_function = SKD[name]
-            integration_function()
+            return integration_function()
