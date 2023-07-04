@@ -21,7 +21,7 @@ class LoginPage(BasePage):
         return
 
     def check_login(self):
-        self.element_is_clickable(self.locators.BUTTON_EXIT)
+        self.element_is_clickable(self.locators.BUTTON_ADMIN)
         return self.driver.current_url
 
 
@@ -91,7 +91,7 @@ class StartPage(BasePage):
     def open_incoming(self):
         # self.element_is_visible(self.locators.MENU).click()  # закомментить при необходимости
         self.element_is_visible(self.locators.INCOMING).click()
-        self.elements_are_visible(self.locators.FIRST_STRING_IN_TABLE)[0].click()
+        self.element_is_visible(self.locators.CHOOSE_FIRST_LINE).click()
 
     def agreement_application(self):
         self.element_is_visible(self.locators.AGREEMENT_BUTTON).click()
@@ -189,7 +189,7 @@ class StartPage(BasePage):
         self.element_is_visible(self.locators.BUTTON_ADD_VISITORS).click()
         self.element_is_visible(self.locators.BUTTON_OPERATOR).send_keys(last_name + first_name)
         listop = self.elements_are_visible(self.locators.OPERATOR_BUTTON)
-        listop[2].click()
+        listop[1].click()
         login = 'operator'
         password = 'Operator23.08'
         self.element_is_visible(self.locators.LOGIN_OPERATOR).send_keys(login)
@@ -248,6 +248,8 @@ class StartPage(BasePage):
         self.elements_are_present(self.locators.FIND_CHECKBOX)[1].click()
         self.element_is_clickable(self.locators.BUTTON_DEL).click()
         self.element_is_clickable(self.locators.BUTTON_OK).click()
+        if name == 'Операторы':
+            self.element_is_clickable(self.locators.BUTTON_OK).click()
         return True
 
     def check_visitor_fio(self, last_name, first_name):
@@ -269,22 +271,14 @@ class StartPage(BasePage):
     def parser_id(txt):
         return ''.join(i for i in txt if i.isdigit())
 
-    # TODO - Работает. Есть четыре недоработки.
-    # TODO - 3: Обрабатываю только первую строчку. Не работает поиск.
-    # TODO - 4: sleep 310 строка
     def fill_credentials(self, login, pas, url_skd, name_SKD):
         self.element_is_visible(self.locators.LOG).clear()
         self.element_is_visible(self.locators.LOG).send_keys(login)
         self.element_is_visible(self.locators.PASSWORD_OPERATOR).clear()
         self.element_is_visible(self.locators.PASSWORD_OPERATOR).send_keys(pas)
-        if name_SKD == 'Active Directory':
-            self.element_is_visible(self.locators.INPUT_URL_AD).send_keys(Keys.CONTROL + 'a')
-            self.element_is_visible(self.locators.INPUT_URL_AD).send_keys(Keys.DELETE)
-            self.element_is_visible(self.locators.INPUT_URL_AD).send_keys(url_skd)
-        else:
-            self.element_is_visible(self.locators.INPUT_URL).send_keys(Keys.CONTROL + 'a')
-            self.element_is_visible(self.locators.INPUT_URL).send_keys(Keys.DELETE)
-            self.element_is_visible(self.locators.INPUT_URL).send_keys(url_skd)
+        self.element_is_visible(self.locators.INPUT_URL).send_keys(Keys.CONTROL + 'a')
+        self.element_is_visible(self.locators.INPUT_URL).send_keys(Keys.DELETE)
+        self.element_is_visible(self.locators.INPUT_URL).send_keys(url_skd)
 
     def configure_integration(self, url_web, port, name, base_url, queue, name_SKD):
         check_box = self.elements_are_present(self.locators.CHECKBOX_INTEGRATION)
@@ -302,22 +296,37 @@ class StartPage(BasePage):
         self.element_is_visible(self.locators.INPUT_NAME).send_keys(name)
         self.element_is_visible(self.locators.PASSWORD_OPERATOR).clear()
         self.element_is_visible(self.locators.PASSWORD_OPERATOR).send_keys(name)
-        self.confirm_stage()
+        if name_SKD == "LyriX":  # Удаление очереди на деактивацию
+            check_box = self.elements_are_present(self.locators.CHECKBOX_INTEGRATION)
+            if check_box[3].get_attribute('aria-checked') == 'false':
+                check_box[3].click()
+        self.confirm_stage(name_SKD)
 
-    def confirm_stage(self):
-        self.element_is_visible(self.locators.ACTIVE_BUTTON).click()
+    def confirm_stage(self, name_SKD):
+        active_button = self.element_is_visible(self.locators.ACTIVE_BUTTON)
+        active_button.click()
+        status = active_button.get_attribute('innerHTML')
         self.element_is_clickable(self.locators.BUTTON_OK).click()
-        time.sleep(0.1)
-        self.element_is_clickable(self.locators.BUTTON_OK).click()
-        cancel_button = self.elements_are_present(self.locators.BUTTON_CANCEL)
-        self.driver.execute_script("arguments[0].click();", cancel_button[1])
-        self.element_is_visible(self.locators.SAVE_APPROVE).click()
-        try:
-            window_element = self.element_is_visible(self.locators.WINDOW_SUCCESS)
-            if window_element.is_displayed():
-                self.element_is_clickable(self.locators.BUTTON_OK).click()
-        except TimeoutException:
-            pass
+        if name_SKD == 'Active Directory' and status == 'Активировать':
+            self.element_is_visible(self.locators.SAVE_APPROVE).click()
+            try:  # всплывающее окно об успешности интеграции
+                window_element = self.element_is_visible(self.locators.WINDOW_SUCCESS)
+                if window_element.is_displayed():
+                    self.element_is_clickable(self.locators.BUTTON_OK).click()
+            except TimeoutException:
+                pass
+        else:
+            time.sleep(0.2)
+            self.element_is_clickable(self.locators.BUTTON_OK).click()
+            cancel_button = self.elements_are_present(self.locators.BUTTON_CANCEL)
+            self.driver.execute_script("arguments[0].click();", cancel_button[1])
+            self.element_is_visible(self.locators.SAVE_APPROVE).click()
+            try:  # всплывающее окно об успешности интеграции
+                window_element = self.element_is_visible(self.locators.WINDOW_SUCCESS)
+                if window_element.is_displayed():
+                    self.element_is_clickable(self.locators.BUTTON_OK).click()
+            except TimeoutException:
+                pass
 
     def configure_rabbitmq_lyrix(self, url_web, queue, base_url):
         self.element_is_visible(self.locators.INPUT_WEB_SERVER).send_keys(Keys.CONTROL + 'a')
@@ -372,7 +381,10 @@ class StartPage(BasePage):
         self.fill_credentials(login, pas, url_skd, name_SKD='Active Directory')
         self.element_is_visible(self.locators.INPUT_BASE).clear()
         self.element_is_visible(self.locators.INPUT_BASE).send_keys(base)
-        self.confirm_stage()
+        check_box = self.elements_are_present(self.locators.CHECKBOX_INTEGRATION)
+        if check_box[2].get_attribute('aria-checked') == 'false':
+            check_box[2].click()
+        self.confirm_stage(name_SKD='Active Directory')
         return self.element_is_visible(self.locators.BUTTON_CHECK).text
 
     def open_menu_integration(self, ID):
@@ -391,6 +403,34 @@ class StartPage(BasePage):
         self.elements_are_present(self.locators.FIND_POISK)[0].send_keys('Люди')
         self.element_is_visible(self.locators.BUTTON_SYNCHRON).click()
         # TODO - тут надо выбрать откуда будем импортировать. Изначально все доступные будут активны и нам нужно отключить ненужные
-        self.element_is_clickable(self.locators.CHECKBOX_ACTIVITY).click()
+        self.element_is_clickable(self.locators.CHECKBOX_ACTIVITY_LyriX).click()
+        self.element_is_present(self.locators.INPUT_CONTAINER).send_keys('Alexey')
+        lists = self.elements_are_visible(self.locators.VISITORS_BUTTON)
+        lists[0].click()
         self.element_is_clickable(self.locators.BUTTON_IMPORT).click()
+        self.elements_are_present(self.locators.FIND_POISK)[0].clear()
         return self.element_is_visible(self.locators.SUCCESS_IMPORT).text
+
+    def check_operator(self):
+        status_1, status_2 = True, False
+        self.elements_are_present(self.locators.FIND_POISK)[0].clear()
+        self.elements_are_present(self.locators.FIND_POISK)[0].send_keys('Операторы')
+        self.element_is_visible(self.locators.FIND_APPLICATION).send_keys('Test')
+        if 'Test A.' in self.driver.page_source:
+            status_1 = False
+        self.elements_are_present(self.locators.FIND_POISK)[0].clear()
+        self.elements_are_present(self.locators.FIND_POISK)[0].send_keys('Сотрудники')
+        self.element_is_visible(self.locators.FIND_APPLICATION).send_keys('Test')
+        if 'Test A.' in self.driver.page_source:
+            status_2 = True
+        return status_1, status_2
+
+    def login_AD(self):
+        login, password = 'Autotest@test.local', 'Passw0rd_2'
+        self.element_is_clickable(self.locators.BUTTON_ADMIN)
+        self.elements_are_present(self.locators.BUTTON_EXIT)[2].click()
+        self.elements_are_present(self.locators.CHECKBOX_INTEGRATION)[0].click()
+        self.element_is_visible(self.locators.LOGIN).send_keys(login)
+        self.element_is_visible(self.locators.PASS).send_keys(password)
+        self.element_is_visible(self.locators.BUTTON_LOGIN).click()
+

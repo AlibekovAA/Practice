@@ -6,8 +6,11 @@ class LoginPageLocators:
     PASS = (By.CSS_SELECTOR, "input[id='passwordControl']")
     BUTTON_LOGIN = (By.CSS_SELECTOR,
                     'button[class="mat-mdc-tooltip-trigger login__form__btn mdc-button mdc-button--raised mat-mdc-raised-button mat-primary mat-mdc-button-base"]')
+    BUTTON_ADMIN = (By.CSS_SELECTOR,
+                    "#body > app-root > div > app-toolbar > div > mat-toolbar > mat-toolbar-row > div > div:nth-child(5) > app-profile-brief > button > span.mdc-button__label")
+
     BUTTON_EXIT = (By.CSS_SELECTOR,
-                   "#body > app-root > div > app-toolbar > div > mat-toolbar > mat-toolbar-row > div > div:nth-child(5) > app-profile-brief > button > span.mdc-button__label")
+                   "span[class='mdc-button__label']")
 
 
 class StartPageLocators(LoginPageLocators):
@@ -71,12 +74,11 @@ class StartPageLocators(LoginPageLocators):
 
     # TODO - настройки интеграции
     LOG = (By.ID, "new-username")
-    INPUT_URL = (By.XPATH, "//textarea[@placeholder='URL СКД']")
+    INPUT_URL = (By.XPATH, "//textarea[@placeholder='URL СКД' or @placeholder='Active Directory URL']")
     EVENT = (By.XPATH, "//span[@class='mdc-list-item__content']//div[@class='wrapper']")
     CHECKBOX_INTEGRATION = (By.CLASS_NAME, 'mdc-checkbox__native-control')
     WINDOW_SUCCESS = (By.CLASS_NAME, 'mat-mdc-dialog-container')
     INPUT_WEB_SERVER = (By.XPATH, "//input[@placeholder='URL веб сервера']")
-    INPUT_URL_AD = (By.XPATH, "//textarea[@placeholder='Active Directory URL']")
     INPUT_URL_RABBIT = (By.XPATH, "//input[@placeholder='URL-адрес RabbitMQ']")
     INPUT_PORT = (By.XPATH, "//input[@placeholder='Порт']")
     INPUT_BASE = (By.XPATH, "//input[@placeholder='Поисковая база']")
@@ -88,14 +90,17 @@ class StartPageLocators(LoginPageLocators):
                     "#body > app-root > div > app-content > mat-sidenav-container > mat-sidenav-content > div > app-listed-data > app-paged-object-list2 > mat-drawer-container > mat-drawer-content > div > div.table-container > table > tbody > tr:nth-child(1) > td.mat-mdc-cell.mdc-data-table__cell.cdk-cell.cdk-column-active.mat-column-active.table-cell.ng-star-inserted > div > div")
     # TODO - END
 
-
-    #TODO - КЕЙС
+    # TODO - КЕЙС
     FIND_POISK = (By.XPATH, "//input[@placeholder='Поиск']")
     BUTTON_IMPORT = (By.XPATH, "//span[contains(text(), 'Импортировать')]")
-    BUTTON_SYNCHRON = (By.CSS_SELECTOR, "#body > app-root > div > app-content > mat-sidenav-container > mat-sidenav-content > div > app-listed-data > app-paged-object-list2 > mat-drawer-container > mat-drawer-content > div > div:nth-child(2) > div > div > button > span.mat-mdc-button-touch-target")
+    BUTTON_SYNCHRON = (By.CSS_SELECTOR,
+                       "#body > app-root > div > app-content > mat-sidenav-container > mat-sidenav-content > div > app-listed-data > app-paged-object-list2 > mat-drawer-container > mat-drawer-content > div > div:nth-child(2) > div > div > button > span.mat-mdc-button-touch-target")
     SUCCESS_IMPORT = (By.XPATH, "//span[@class='ng-star-inserted']")
-    CHECKBOX_ACTIVITY = (By.XPATH, "//label[contains(text(), ' Active Directory ')]")
-    #TODO - END
+    CHECKBOX_ACTIVITY_AD = (By.XPATH, "//label[contains(text(), ' Active Directory ')]")
+    CHECKBOX_ACTIVITY_LyriX = (By.XPATH, "//label[contains(text(), ' LyriX ')]")
+    INPUT_CONTAINER = (By.XPATH, "//input[@role='combobox']")
+
+    # TODO - END
 
     MENU_INTEGRATION = (By.CSS_SELECTOR,
                         "#body > app-root > div > app-content > mat-sidenav-container > mat-sidenav > div > div > div:nth-child(1) > div.divLtr.ng-star-inserted > table > tr:nth-child(10) > td > mat-nav-list > a:nth-child(3) > span > span > div > div > div")

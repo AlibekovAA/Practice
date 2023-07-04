@@ -155,4 +155,5 @@ def test_case_unknown(driver):
     start_page.open_only_menu()
     assert start_page.switch_integration('Active Directory') == '✓', "Произошла ошибка интеграции Active Directory"
     assert start_page.synchron() == 'Объекты успешно импортированы.', 'Произошла ошибка синхронизации'
-
+    assert start_page.check_operator() != (True, True), 'Ошибка импортирования'  # TODO - неккоректно работает функция
+    start_page.login_AD()
