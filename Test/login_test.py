@@ -49,7 +49,8 @@ def test_add_access_group(driver):
 def test_create_my_application(driver):
     url = test_login_form(driver)
     start_page = StartPage(driver, url)
-    txt = 'Постоянный'
+    # txt = 'Постоянный'
+    txt = 'Гостевой'
     if txt != 'Гостевой':
         start_page.add_employee()
     else:
@@ -68,6 +69,7 @@ def test_create_my_application(driver):
 """Кейс_7"""
 
 
+# проверка вылета оператора после деактивации
 def test_case_7(driver):
     url = test_login_form(driver)
     start_page = StartPage(driver, url)
@@ -97,6 +99,7 @@ def test_withdraw_pass(driver):
     start_page.withdraw_pass()
 
 
+# Валится
 def test_copy_application(driver):
     url = test_login_form(driver)
     start_page = StartPage(driver, url)
@@ -109,6 +112,7 @@ def test_copy_application(driver):
 """Удаление оператора"""
 
 
+# TODO - добавить проверку на удаление
 def test_del_operator(driver):
     url = test_login_form(driver)
     start_page = StartPage(driver, url)
@@ -139,10 +143,10 @@ def test_case_7_all(driver):
     url = test_login_form(driver)
     start_page = StartPage(driver, url)
     start_page.add_employee()
-    start_page.add_operator()
+    last_name = start_page.add_operator()
     old_url = start_page.open_new_url()
-    new_url = start_page.active_off()
-    assert old_url == new_url, "Произошла ошибка"
+    new_url = start_page.active_off(last_name)
+    assert old_url != new_url, "Произошла ошибка"
     driver.switch_to.window(driver.window_handles[0])
     assert start_page.del_operator('Операторы'), "Ошибка при удалении в разделе Операторы"
     assert start_page.del_operator('Сотрудники'), "Ошибка при удалении в разделе Сотрудники"
