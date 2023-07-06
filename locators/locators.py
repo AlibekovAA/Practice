@@ -22,7 +22,6 @@ class LoginPageLocators:
                     'button[class="mat-mdc-tooltip-trigger login__form__btn mdc-button mdc-button--raised mat-mdc-raised-button mat-primary mat-mdc-button-base"]')
     BUTTON_EXIT = (By.CSS_SELECTOR, 'span[class="mdc-button__label"]')
     MENU = (By.CSS_SELECTOR, "span[class='mat-mdc-button-touch-target']")
-    # кнопка настройки пользователя справа сверху
     BUTTON_ADMIN = (By.CSS_SELECTOR,
                     "#body > app-root > div > app-toolbar > div > mat-toolbar > mat-toolbar-row > div > div:nth-child(5) > app-profile-brief > button > span.mdc-button__label")
 
@@ -31,6 +30,9 @@ class IncomingLocators:
     INCOMING = (By.XPATH, '//div[contains(text(),"Входящие")]/ancestor::a')
     FIRST_STRING_IN_TABLE = (By.CSS_SELECTOR,
                              '#body > app-root > div > app-content > mat-sidenav-container > mat-sidenav-content > div > app-listed-data > app-paged-object-list2 > mat-drawer-container > mat-drawer-content > div > div.table-container > table > tbody')
+    # TODO - хочу искать вторую строчку и если ее нет, то кликать на первую
+    # SECOND_STRING_IN_TABLE = ()
+
 
 
 class AccessGroupLocators:
@@ -48,8 +50,7 @@ class AccessGroupLocators:
 
 
 class VisitorsLocators:
-    VISITORS = (By.CSS_SELECTOR, 'a[href="listedData/PersonByCategory/16"]')  # переход в категорию из
-    # заполнение полей посетителя
+    VISITORS = (By.CSS_SELECTOR, 'a[href="listedData/PersonByCategory/16"]')
     LAST_NAME = (By.XPATH,
                  '/html/body/div[4]/div[2]/div/mat-dialog-container/div/div/app-show-obj-component/section/app-common-object-editor/div/app-person/lib-base-panel/section/div[2]/div[2]/div/div[1]/div/mat-form-field[1]/div[1]/div[2]/div/input')
     VISITORS_FRAME = (By.CSS_SELECTOR, 'div[class="content ng-star-inserted"]')
@@ -68,21 +69,13 @@ class VisitorsLocators:
     VISITORS_BUTTON = (By.CSS_SELECTOR, "span[class='mdc-list-item__primary-text']")
     INPUT_VISITOR = (By.XPATH, "//input[@placeholder='Посетители']")
 
-    # ПЕРЕПИСАТЬ нужно сделать через сотрудника, а не через посетителя
-    ADD_INFORM = (By.XPATH, '//div[@class="wrapper" and contains(text(), "Доп. информация")]')
-    DEL_CATEGORY = (By.XPATH, '//*[@class="mat-icon notranslate mat-mdc-tooltip-trigger mat-primary ng-star-inserted"]')
-    BUTTON_SEARCH = (By.XPATH, "//input[@placeholder='Категория']")
-    CATEGORY_BUTTON = (By.CSS_SELECTOR, "span[class='mdc-list-item__primary-text']")
-
-    # Конец
-    EMAIL_SEARCH = (By.XPATH, ".//input[@autocomplete='email']")
-    CONTACT_INFORM = (By.XPATH, '//div[@class="wrapper" and contains(text(), "Контактная информация")]')
-
 
 class EmployeeLocators:
     MENU_EMPLOYEE = (By.CSS_SELECTOR,
                      "#body > app-root > div > app-content > mat-sidenav-container > mat-sidenav > div > div > div:nth-child(1) > div.divLtr.ng-star-inserted > table > tr:nth-child(3) > td > mat-nav-list > a:nth-child(1) > span > span > div")
     INPUT_WORKER = (By.XPATH, "//input[@placeholder='Работник']")
+    EMAIL_SEARCH = (By.XPATH, ".//input[@autocomplete='email']")
+    CONTACT_INFORM = (By.XPATH, '//div[@class="wrapper" and contains(text(), "Контактная информация")]')
 
 
 class BaseLocators:
@@ -93,6 +86,8 @@ class BaseLocators:
     BUTTON_OK = (By.XPATH, "//span[contains(text(), 'ОК')]")
     # переделать остальные FIND под этот
     FIND_POISK = (By.XPATH, "//input[@placeholder='Поиск']")
+    BUTTON_RESTART = (By.CSS_SELECTOR,
+                      '#body > app-root > div > app-content > mat-sidenav-container > mat-sidenav-content > div > app-listed-data > app-paged-object-list2 > mat-drawer-container > mat-drawer-content > div > div:nth-child(2) > div > button:nth-child(6)')
 
 
 class OperatorsLocator:
@@ -104,7 +99,6 @@ class OperatorsLocator:
     PASSWORD_OPERATOR = (By.XPATH, "//input[@placeholder='Пароль']")
     REPLY_PASSWORD = (By.XPATH, "//input[@placeholder='Повторите пароль']")
     CHECK_BOX_OPERATOR = (By.XPATH, "//label[contains(text(), 'Активен ')]")
-    # по смыслу одинаково что и Operators выбрать одно
     MENU_STAFF = (By.XPATH,
                   '/html/body/app-root/div/app-content/mat-sidenav-container/mat-sidenav/div/div/div[1]/div[2]/table/tr[10]/td/mat-nav-list/a[1]')
 
@@ -135,6 +129,7 @@ class IntegrationSettingsLocators:
     CHECKBOX_ACTIVITY_AD = (By.XPATH, "//label[contains(text(), ' Active Directory ')]")
     CHECKBOX_ACTIVITY_LyriX = (By.XPATH, "//label[contains(text(), ' LyriX ')]")
     INPUT_CONTAINER = (By.XPATH, "//input[@role='combobox']")
+    NEW_FIRST_STRING_IN_TABLE = (By.XPATH, '//button[contains(@class, "edit-btn")]')
 
 
 class ActivePasseLocators:
@@ -143,7 +138,7 @@ class ActivePasseLocators:
     BUTTON_WITHDROW = (By.XPATH, "//span[contains(text(),'Изъять')]")
 
     CLOSE_WINDOW_ACTIVATE_PASS = (
-    By.XPATH, '//button[@class="mdc-icon-button mat-mdc-icon-button mat-primary mat-mdc-button-base"]')
+        By.XPATH, '//button[@class="mdc-icon-button mat-mdc-icon-button mat-primary mat-mdc-button-base"]')
     BUTTON_OK_PATTERN_APPROVE = (By.CSS_SELECTOR,
                                  ' div > div > app-show-msg-component > section > mat-dialog-actions > app-btn-dialog:nth-child(1) > button > span.mdc-button__label')
 
